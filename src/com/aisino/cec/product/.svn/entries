@@ -1,0 +1,49 @@
+10
+
+dir
+7849
+svn://192.168.3.98/zxaebp/aisinoCEC/src/com/aisino/cec/product
+svn://192.168.3.98/zxaebp
+
+
+
+2015-05-25T02:47:23.234375Z
+7849
+liuyi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ac2ca032-cfb0-a24d-91c5-4d664307dad1
+
+enumpackage
+dir
+
+model
+dir
+
+service
+dir
+
+dao
+dir
+
+controller
+dir
+
+mapping
+dir
+
+conditionbean
+dir
+

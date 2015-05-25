@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aisino.cec.test.dao.DataModelMapper">
+	<resultMap id="BaseResultMap" type="DataModel">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+		<result column="continued" property="continued" jdbcType="TINYINT" />
+		<result column="birthday" property="birthday" jdbcType="TIMESTAMP" />
+		<result column="hobby" property="hobby" jdbcType="VARCHAR" />
+		<result column="max_age" property="maxAge" jdbcType="INTEGER" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, name, password, continued, birthday, hobby, max_age
+  </sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from data_model
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+
+	<select id="selectByConditions" resultMap="BaseResultMap"
+		parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from data_model where 1=1
+		<trim>
+			<if test="id != null">
+				and id=#{id,jdbcType=INTEGER}  
+      </if>
+			<if test="name != null">
+				and name like "%"#{name,jdbcType=VARCHAR}"%" 
+      </if>
+			<if test="password != null">
+				and password=#{password,jdbcType=VARCHAR} 
+      </if>
+			<if test="continued != null">
+				and continued=#{continued,jdbcType=TINYINT}
+      </if>
+			<if test="birthday != null">
+       <![CDATA[
+       and  birthday>=#{birthday,jdbcType=TIMESTAMP} 
+       ]]>
+			</if>
+			<if test="birthday2 != null">
+      <![CDATA[
+       and  birthday<=#{birthday2,jdbcType=TIMESTAMP} 
+        ]]>
+			</if>
+			<if test="hobby != null">
+				and hobby=#{hobby,jdbcType=VARCHAR} 
+      </if>
+			<if test="maxAge != null">
+		
+				and max_age=#{max_age,jdbcType=INTEGER}
+      </if>
+		</trim>
+	</select>
+	
+	<select id="selectByConditions2" resultMap="BaseResultMap"
+		parameterType="com.aisino.cec.test.conditionbean.DataModelCondition">
+		select
+		<include refid="Base_Column_List" />
+		from data_model where 1=1
+		<trim>
+			<if test="id != null">
+				and id=#{id,jdbcType=INTEGER}  
+      </if>
+			<if test="name != null">
+				and name like "%"#{name,jdbcType=VARCHAR}"%" 
+      </if>
+			<if test="password != null">
+				and password=#{password,jdbcType=VARCHAR} 
+      </if>
+			<if test="continued != null">
+				and continued=#{continued,jdbcType=TINYINT}
+      </if>
+			
+			<if test="hobby != null">
+				and hobby=#{hobby,jdbcType=VARCHAR} 
+      </if>
+			<if test="maxAge != null">
+		
+				and max_age=#{max_age,jdbcType=INTEGER}
+      </if>
+		</trim>
+	</select>
+	
+	
+	
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from data_model
+		where id = #{id,jdbcType=INTEGER}
+  </delete>
+	<insert id="insert" parameterType="DataModel">
+		insert into data_model (id, name, password,
+		continued, birthday, hobby,
+		max_age)
+		values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},
+		#{password,jdbcType=VARCHAR},
+		#{continued,jdbcType=TINYINT}, #{birthday,jdbcType=TIMESTAMP}, #{hobby,jdbcType=VARCHAR},
+		#{maxAge,jdbcType=INTEGER})
+  </insert>
+	<insert id="insertSelective" parameterType="DataModel">
+		insert into data_model
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+      </if>
+			<if test="name != null">
+				name,
+      </if>
+			<if test="password != null">
+				password,
+      </if>
+			<if test="continued != null">
+				continued,
+      </if>
+			<if test="birthday != null">
+				birthday,
+      </if>
+			<if test="hobby != null">
+				hobby,
+      </if>
+			<if test="maxAge != null">
+				max_age,
+      </if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+      </if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+      </if>
+			<if test="password != null">
+				#{password,jdbcType=VARCHAR},
+      </if>
+			<if test="continued != null">
+				#{continued,jdbcType=TINYINT},
+      </if>
+			<if test="birthday != null">
+				#{birthday,jdbcType=TIMESTAMP},
+      </if>
+			<if test="hobby != null">
+				#{hobby,jdbcType=VARCHAR},
+      </if>
+			<if test="maxAge != null">
+				#{maxAge,jdbcType=INTEGER},
+      </if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="DataModel">
+		update data_model
+		<set>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+      </if>
+			<if test="password != null">
+				password = #{password,jdbcType=VARCHAR},
+      </if>
+			<if test="continued != null">
+				continued = #{continued,jdbcType=TINYINT},
+      </if>
+			<if test="birthday != null">
+				birthday = #{birthday,jdbcType=TIMESTAMP},
+      </if>
+			<if test="hobby != null">
+				hobby = #{hobby,jdbcType=VARCHAR},
+      </if>
+			<if test="maxAge != null">
+				max_age = #{maxAge,jdbcType=INTEGER},
+      </if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="DataModel">
+		update data_model
+		set name = #{name,jdbcType=VARCHAR},
+		password = #{password,jdbcType=VARCHAR},
+		continued = #{continued,jdbcType=TINYINT},
+		birthday = #{birthday,jdbcType=TIMESTAMP},
+		hobby = #{hobby,jdbcType=VARCHAR},
+		max_age = #{maxAge,jdbcType=INTEGER}
+		where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

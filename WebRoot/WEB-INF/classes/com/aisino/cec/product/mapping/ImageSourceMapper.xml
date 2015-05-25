@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aisino.cec.product.dao.ImageSourceMapper" >
+  <resultMap id="BaseResultMap" type="com.aisino.cec.product.model.ImageSource" >
+    <id column="image_source_id" property="imageSourceId" jdbcType="CHAR" />
+    <result column="root_address" property="rootAddress" jdbcType="VARCHAR" />
+    <result column="desc_info" property="descInfo" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_user_id" property="createUserId" jdbcType="CHAR" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="modify_user_id" property="modifyUserId" jdbcType="CHAR" />
+    <result column="modify_info" property="modifyInfo" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    image_source_id, root_address, desc_info, create_time, create_user_id, modify_time, 
+    modify_user_id, modify_info
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from b_image_source
+    where image_source_id = #{imageSourceId,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from b_image_source
+    where image_source_id = #{imageSourceId,jdbcType=CHAR}
+  </delete>
+  <insert id="insert" parameterType="com.aisino.cec.product.model.ImageSource" >
+    insert into b_image_source (image_source_id, root_address, desc_info, 
+      create_time, create_user_id, modify_time, 
+      modify_user_id, modify_info)
+    values (#{imageSourceId,jdbcType=CHAR}, #{rootAddress,jdbcType=VARCHAR}, #{descInfo,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{createUserId,jdbcType=CHAR}, #{modifyTime,jdbcType=TIMESTAMP}, 
+      #{modifyUserId,jdbcType=CHAR}, #{modifyInfo,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aisino.cec.product.model.ImageSource" >
+    insert into b_image_source
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="imageSourceId != null" >
+        image_source_id,
+      </if>
+      <if test="rootAddress != null" >
+        root_address,
+      </if>
+      <if test="descInfo != null" >
+        desc_info,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="createUserId != null" >
+        create_user_id,
+      </if>
+      <if test="modifyTime != null" >
+        modify_time,
+      </if>
+      <if test="modifyUserId != null" >
+        modify_user_id,
+      </if>
+      <if test="modifyInfo != null" >
+        modify_info,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="imageSourceId != null" >
+        #{imageSourceId,jdbcType=CHAR},
+      </if>
+      <if test="rootAddress != null" >
+        #{rootAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="descInfo != null" >
+        #{descInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null" >
+        #{createUserId,jdbcType=CHAR},
+      </if>
+      <if test="modifyTime != null" >
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyUserId != null" >
+        #{modifyUserId,jdbcType=CHAR},
+      </if>
+      <if test="modifyInfo != null" >
+        #{modifyInfo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aisino.cec.product.model.ImageSource" >
+    update b_image_source
+    <set >
+      <if test="rootAddress != null" >
+        root_address = #{rootAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="descInfo != null" >
+        desc_info = #{descInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null" >
+        create_user_id = #{createUserId,jdbcType=CHAR},
+      </if>
+      <if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyUserId != null" >
+        modify_user_id = #{modifyUserId,jdbcType=CHAR},
+      </if>
+      <if test="modifyInfo != null" >
+        modify_info = #{modifyInfo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where image_source_id = #{imageSourceId,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aisino.cec.product.model.ImageSource" >
+    update b_image_source
+    set root_address = #{rootAddress,jdbcType=VARCHAR},
+      desc_info = #{descInfo,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_user_id = #{createUserId,jdbcType=CHAR},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      modify_user_id = #{modifyUserId,jdbcType=CHAR},
+      modify_info = #{modifyInfo,jdbcType=VARCHAR}
+    where image_source_id = #{imageSourceId,jdbcType=CHAR}
+  </update>
+</mapper>

@@ -1,0 +1,123 @@
+package com.aisino.cec.common.util.mergeattr;
+
+import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+import net.sf.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.MethodInterceptor;
+import net.sf.cglib.proxy.MethodProxy;
+/**
+ * 对象集合合并代理，用于在多个对象不存在继承关系时，在需要合并的类中提供hashCode方法后，在
+ * 这里代理equals方法进行Set合并
+ * @author jwh
+ *
+ */
+public class ProxyParamStrategy<T> implements IParamStrategy<T> {
+
+	@Override
+	public Set<T> mergeParamsSet(Set<T> privateSet,
+			Set<T> publicSet) {
+		Set<T> resultSet = new HashSet<T>(privateSet.size()
+				+ publicSet.size());
+		proxySet(privateSet, resultSet);
+
+		proxySet(publicSet, resultSet);
+		return resultSet;
+	}
+	
+	@Override
+	public Set<T> mergeMoreParamsSet(Set<T>... sets) {
+		
+		int capacity=0;
+		for(int i=0;i<sets.length;i++){
+			capacity+=sets[i].size();
+		}
+		Set<T> resultSet=new HashSet<T>(capacity);
+
+
+		for(int i=0;i<sets.length;i++){
+			proxySet(sets[i], resultSet);			
+		}
+		
+		return resultSet;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	private void proxySet(Set<T> srcSet, Set<T> resultSet) {
+
+		for (Iterator<T> privateSetIter = srcSet.iterator(); privateSetIter
+				.hasNext();) {
+			T next = privateSetIter.next();
+			T proxyInstance =(T) new ParamProxyHandler()
+					.createProxyInstance(next);
+			resultSet.add(proxyInstance);
+		}
+	}
+	
+	class ParamProxyHandler implements MethodInterceptor {
+		private Object targetObject;
+		
+		//替换为注册表类型
+		@Override
+		public Object intercept(Object enhancedObject, Method method, Object[] methodArgs,
+				MethodProxy methodProxy) throws Throwable {
+			
+			if(method.getName().equals("equals")){
+				
+				if(targetObject instanceof PublicParam2){
+					PublicParam2 publicParam2=(PublicParam2)targetObject;
+					if(methodArgs.length>0){
+						if(publicParam2==null||methodArgs[0]==null){
+							return Boolean.FALSE;
+						}else if(methodArgs[0] instanceof PrivateParam2){
+							PrivateParam2 privateParam2=(PrivateParam2)methodArgs[0];
+							if(publicParam2.getId().equals(privateParam2.getId())&&publicParam2.getName().equals(privateParam2.getName())){
+								return Boolean.TRUE;
+							}
+						}
+					}
+				}else if(targetObject instanceof PrivateParam2){
+					PrivateParam2 privateParam2=(PrivateParam2)targetObject;
+					if(methodArgs.length>0){
+						if(privateParam2==null||methodArgs[0]==null){
+							return Boolean.FALSE;
+						}else if(methodArgs[0] instanceof PublicParam2){
+							PublicParam2 publicParam2=(PublicParam2)methodArgs[0];
+							if(publicParam2.getId().equals(privateParam2.getId())&&publicParam2.getName().equals(privateParam2.getName())){
+								return Boolean.TRUE;
+							}
+						}
+					}
+				}
+			}
+			
+			return methodProxy.invoke(targetObject, methodArgs);
+		}
+		
+	
+		
+		public Object createProxyInstance(Object targetObject){
+			//替换为xml中读取的注册表，判断是否需要创建代理对象，如果不在注册表中则抛出运行时异常
+			if(!(targetObject instanceof PublicParam2 || targetObject instanceof PrivateParam2)){
+				throw new RuntimeException("targetObject "+targetObject.getClass()+" is not a right type!");
+			}
+			
+			
+			this.targetObject=targetObject;
+			Enhancer enhancer = new Enhancer();
+			enhancer.setSuperclass(this.targetObject.getClass());
+			enhancer.setCallback(this);
+			
+			return enhancer.create();
+		}
+
+		
+
+	}
+
+
+
+}

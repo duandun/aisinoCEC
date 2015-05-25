@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aisino.cec.product.dao.SkuAttrOptionAliasMapper" >
+  <resultMap id="BaseResultMap" type="com.aisino.cec.product.model.SkuAttrOptionAlias" >
+    <id column="sku_attr_option_spec_id" property="skuAttrOptionSpecId" jdbcType="CHAR" />
+    <result column="sku_option_id" property="skuOptionId" jdbcType="CHAR" />
+    <result column="option_value_alias" property="optionValueAlias" jdbcType="VARCHAR" />
+    <result column="seller_id" property="sellerId" jdbcType="CHAR" />
+    <result column="image_id" property="imageId" jdbcType="CHAR" />
+    <result column="type_info" property="typeInfo" jdbcType="CHAR" />
+    <result column="create_user_id" property="createUserId" jdbcType="CHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modify_user_id" property="modifyUserId" jdbcType="CHAR" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="modify_info" property="modifyInfo" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    sku_attr_option_spec_id, sku_option_id, option_value_alias, seller_id, image_id, 
+    type_info, create_user_id, create_time, modify_user_id, modify_time, modify_info
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from p_sku_attr_option_alias
+    where sku_attr_option_spec_id = #{skuAttrOptionSpecId,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from p_sku_attr_option_alias
+    where sku_attr_option_spec_id = #{skuAttrOptionSpecId,jdbcType=CHAR}
+  </delete>
+  <insert id="insert" parameterType="com.aisino.cec.product.model.SkuAttrOptionAlias" >
+    insert into p_sku_attr_option_alias (sku_attr_option_spec_id, sku_option_id, option_value_alias, 
+      seller_id, image_id, type_info, 
+      create_user_id, create_time, modify_user_id, 
+      modify_time, modify_info)
+    values (#{skuAttrOptionSpecId,jdbcType=CHAR}, #{skuOptionId,jdbcType=CHAR}, #{optionValueAlias,jdbcType=VARCHAR}, 
+      #{sellerId,jdbcType=CHAR}, #{imageId,jdbcType=CHAR}, #{typeInfo,jdbcType=CHAR}, 
+      #{createUserId,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, #{modifyUserId,jdbcType=CHAR}, 
+      #{modifyTime,jdbcType=TIMESTAMP}, #{modifyInfo,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aisino.cec.product.model.SkuAttrOptionAlias" >
+    insert into p_sku_attr_option_alias
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="skuAttrOptionSpecId != null" >
+        sku_attr_option_spec_id,
+      </if>
+      <if test="skuOptionId != null" >
+        sku_option_id,
+      </if>
+      <if test="optionValueAlias != null" >
+        option_value_alias,
+      </if>
+      <if test="sellerId != null" >
+        seller_id,
+      </if>
+      <if test="imageId != null" >
+        image_id,
+      </if>
+      <if test="typeInfo != null" >
+        type_info,
+      </if>
+      <if test="createUserId != null" >
+        create_user_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="modifyUserId != null" >
+        modify_user_id,
+      </if>
+      <if test="modifyTime != null" >
+        modify_time,
+      </if>
+      <if test="modifyInfo != null" >
+        modify_info,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="skuAttrOptionSpecId != null" >
+        #{skuAttrOptionSpecId,jdbcType=CHAR},
+      </if>
+      <if test="skuOptionId != null" >
+        #{skuOptionId,jdbcType=CHAR},
+      </if>
+      <if test="optionValueAlias != null" >
+        #{optionValueAlias,jdbcType=VARCHAR},
+      </if>
+      <if test="sellerId != null" >
+        #{sellerId,jdbcType=CHAR},
+      </if>
+      <if test="imageId != null" >
+        #{imageId,jdbcType=CHAR},
+      </if>
+      <if test="typeInfo != null" >
+        #{typeInfo,jdbcType=CHAR},
+      </if>
+      <if test="createUserId != null" >
+        #{createUserId,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyUserId != null" >
+        #{modifyUserId,jdbcType=CHAR},
+      </if>
+      <if test="modifyTime != null" >
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyInfo != null" >
+        #{modifyInfo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aisino.cec.product.model.SkuAttrOptionAlias" >
+    update p_sku_attr_option_alias
+    <set >
+      <if test="skuOptionId != null" >
+        sku_option_id = #{skuOptionId,jdbcType=CHAR},
+      </if>
+      <if test="optionValueAlias != null" >
+        option_value_alias = #{optionValueAlias,jdbcType=VARCHAR},
+      </if>
+      <if test="sellerId != null" >
+        seller_id = #{sellerId,jdbcType=CHAR},
+      </if>
+      <if test="imageId != null" >
+        image_id = #{imageId,jdbcType=CHAR},
+      </if>
+      <if test="typeInfo != null" >
+        type_info = #{typeInfo,jdbcType=CHAR},
+      </if>
+      <if test="createUserId != null" >
+        create_user_id = #{createUserId,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyUserId != null" >
+        modify_user_id = #{modifyUserId,jdbcType=CHAR},
+      </if>
+      <if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyInfo != null" >
+        modify_info = #{modifyInfo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where sku_attr_option_spec_id = #{skuAttrOptionSpecId,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aisino.cec.product.model.SkuAttrOptionAlias" >
+    update p_sku_attr_option_alias
+    set sku_option_id = #{skuOptionId,jdbcType=CHAR},
+      option_value_alias = #{optionValueAlias,jdbcType=VARCHAR},
+      seller_id = #{sellerId,jdbcType=CHAR},
+      image_id = #{imageId,jdbcType=CHAR},
+      type_info = #{typeInfo,jdbcType=CHAR},
+      create_user_id = #{createUserId,jdbcType=CHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modify_user_id = #{modifyUserId,jdbcType=CHAR},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      modify_info = #{modifyInfo,jdbcType=VARCHAR}
+    where sku_attr_option_spec_id = #{skuAttrOptionSpecId,jdbcType=CHAR}
+  </update>
+</mapper>

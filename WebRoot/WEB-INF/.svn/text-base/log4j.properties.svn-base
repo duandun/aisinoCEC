@@ -1,0 +1,19 @@
+
+#c3p0
+log4j.category.com.mchange.v2.log.log4j.Log4jMLog=ALL,A2
+
+#c3p0 appender
+log4j.appender.A1=org.apache.log4j.ConsoleAppender
+log4j.appender.A1.layout=org.apache.log4j.PatternLayout
+log4j.appender.A1.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss,SSS} [%c]-[%p] %m%n
+log4j.appender.A2=org.apache.log4j.RollingFileAppender
+
+log4j.appender.A2.MaxFileSize=500KB
+log4j.appender.A2.MaxBackupIndex=1
+#log4j.appender.A2.layout=org.apache.log4j.HTMLLayout
+log4j.appender.A2.layout=org.apache.log4j.SimpleLayout
+
+
+#将ibatis log4j运行级别调到DEBUG可以在控制台打印出ibatis运行的sql语句
+log4j.rootLogger=debug,stdout
+

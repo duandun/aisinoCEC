@@ -1,0 +1,152 @@
+/**
+ * 
+ */
+
+(function($){
+	window.register = $.fn.register = {
+			/**
+			 * 验证码校验
+			 */		
+		captchaCheck : function(captchaCode) {
+		//	alert("hh");
+			var captcha = $("#captchaCode").val();
+			var result = false;
+			$.ajax({
+				url : basePath + "account/captchaCheck.html?" + new Date().getTime(),
+				type : "post",
+				dataType : "json",
+				data : {
+					captchaCode : captcha
+				},
+				async : false,
+				success : function(data) {
+					result = data.captchaCheckResult;
+				},
+				error : function(data) {
+					$.jBox.error("验证码错误", "提示信息");
+					result = false;
+				}
+			});
+			return result;
+		},
+		
+		/**
+		 * 快速注册
+		 */
+		quickRegister : function() {
+			if($("#registerForm").valid()) {
+		//		alert("OK");
+				$("#registerForm").attr("action", "account/saveAccountInfo.html?" + new Date().getTime());
+				//	console.log("jinlaile");
+
+				$("#registerForm").submit();
+			}
+					},
+		/**
+		 * 重发激活邮件
+		 */
+		sendMailAgain : function(email) {
+			$.ajax({
+				url : basePath + "account/sendEmailAgain.html?" + new Date().getTime(),
+				type : "post",
+				dataType : "json",
+				data : {
+					email : email
+				},
+				async : false,
+				success : function(data) {
+					$.jBox.success("激活邮件发送成功！", "提示信息");
+				},
+				error : function(data) {
+					alert("激活邮件发送失败，请点击重发！", "提示信息");
+				}
+			});
+		},
+		
+		/**
+		 * 用户名重复性校验
+		 * 
+		 * @param {Object}
+		 *  accountName
+		 */
+		accountNameCheck : function(accountName) {
+			var result = false;
+			$.ajax({
+				url : basePath + "account/accountNameCheck.html?" + new Date().getTime(),
+				type : "post",
+				dataType : "json",
+				data : {
+					accountName : accountName
+				},
+				async : false,
+				success : function(data) {
+					result = data.accountNameCheckResult;
+				},
+				error : function(data) {
+					$.jBox.error("该用户名已被注册", "提示信息");
+					result = false;
+				}
+			});
+			return result;
+		},
+		
+		/**
+		 * 电子邮箱重复性校验
+		 * 
+		 * @param {Object}
+		 *            email
+		 */
+		emailUniqueCheck : function(email) {
+			var result = false;
+			$.ajax({
+				url : basePath + "account/emailCheck.html?" + new Date().getTime(),
+				type : "post",
+				dataType : "json",
+				data : {
+					email : email
+				},
+				async : false,
+				success : function(data) {
+					result = data.emailUniqueCheckResult;
+				},
+				error : function(data) {
+					$.jBox.error("该电子邮箱已被注册", "提示信息");
+					result = false;
+				}
+			});
+			return result;
+		},
+		
+		/**
+		 *  手机号码重复性校验
+		 * 
+		 */
+		phoneNumCheck : function(phoneNum) {
+			var result = false;
+			$.ajax({
+				url : basePath + "account/phoneNumCheck.html?" + new Date().getTime(),
+				type : "post",
+				dataType : "json",
+				data : {
+					phoneNum : phoneNum
+				},
+				async : false,
+				success : function(data) {
+					result = data.phoneNumChecResult;
+				},
+				error : function(data) {
+					$.jBox.error("该手机号已经被注册", "提示信息");
+					result = false;
+				}
+			});
+			return result;
+		}
+	};
+})(jQuery);
+
+jQuery(document).ready(function($) {
+	$("#verificationCodeImg").click(function() {
+		$("#verificationCodeImg").attr("src", "util/captcha?timestamp=" + new Date().getTime());
+	});
+});
+

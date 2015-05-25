@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aisino.cec.enterprise.dao.authentication.EnterpriseBaseInfoMapper" >
+	
+	<resultMap id="BaseResultMap" type="EnterpriseBaseInfo">
+		<id column="enterprise_base_info_id" property="enterpriseBaseInfoId" jdbcType="VARCHAR" />
+		<result column="enterprise_name" property="enterpriseName" jdbcType="VARCHAR" />
+		<result column="legal_person_name" property="legalPersonName" jdbcType="VARCHAR" />
+		<result column="legal_person_id_num" property="legalPersonIdNum" jdbcType="VARCHAR" />
+		<result column="legal_person_id_card" property="legalPersonIdCard" jdbcType="VARCHAR" />
+		<result column="registered_num" property="registeredNum" jdbcType="VARCHAR" />
+		<result column="registered_card" property="registeredCard" jdbcType="VARCHAR" />
+		<result column="organization_code" property="organizationCode" jdbcType="VARCHAR" />
+		<result column="organization_card" property="organizationCard" jdbcType="VARCHAR" />
+		<result column="authentication_id" property="authenticationId" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		enterprise_base_info_id, enterprise_name, 
+		legal_person_name, legal_person_id_num, legal_person_id_card,
+		registered_num, registered_card,
+		organization_code, organization_card,
+		authentication_id
+ 	 </sql>
+	
+	<insert id="insertEnterpriseBaseInfo" parameterType="EnterpriseBaseInfo">
+		insert into c_enterprise_base_info
+		(
+			<include refid="Base_Column_List" />
+		)
+		values 
+		(
+			#{enterpriseBaseInfoId, jdbcType=VARCHAR},
+			#{enterpriseName, jdbcType=VARCHAR},
+			#{legalPersonName, jdbcType=VARCHAR},
+			#{legalPersonIdNum, jdbcType=VARCHAR},
+			#{legalPersonIdCard, jdbcType=VARCHAR},
+			#{registeredNum, jdbcType=VARCHAR},
+			#{registeredCard, jdbcType=VARCHAR},
+			#{organizationCode, jdbcType=VARCHAR},
+			#{organizationCard, jdbcType=VARCHAR},
+			#{authenticationId, jdbcType=VARCHAR}
+		)
+ 	</insert>
+  
+  	<update id="updateEnterpriseBaseInfo" parameterType="EnterpriseBaseInfo">
+  		update c_enterprise_base_info 
+		set legal_person_name = #{legalPersonName, jdbcType=VARCHAR},
+			legal_person_id_num = #{legalPersonIdNum, jdbcType=VARCHAR},
+			legal_person_id_card = #{legalPersonIdCard, jdbcType=VARCHAR},
+			registered_num = #{registeredNum, jdbcType=VARCHAR},
+			registered_card = #{registeredCard, jdbcType=VARCHAR},
+			organization_code = #{organizationCode, jdbcType=VARCHAR},
+			organization_card = #{organizationCard, jdbcType=VARCHAR}
+		where authentication_id = #{authenticationId, jdbcType=VARCHAR}
+  	</update>
+  	
+  	<select id="selectByAuthenticationId" parameterType="java.lang.String" resultMap="BaseResultMap">
+  		select 
+		<include refid="Base_Column_List" />
+		from c_enterprise_base_info
+   		where authentication_id = #{authenticationId, jdbcType=VARCHAR}
+  	</select>
+  	
+  	<select id="selectByPrimaryId" parameterType="java.lang.String" resultMap="BaseResultMap">
+  		select 
+		<include refid="Base_Column_List" />
+		from c_enterprise_base_info
+   		where enterprise_base_info_id = #{enterpriseBaseInfoId, jdbcType=VARCHAR}
+  	</select>
+</mapper>

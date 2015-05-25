@@ -1,0 +1,62 @@
+10
+
+dir
+7848
+svn://192.168.3.98/zxaebp/aisinoCEC/src/com/aisino/cec/common/util
+svn://192.168.3.98/zxaebp
+
+
+
+2015-05-25T01:00:16.531250Z
+7846
+jiawenhe
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ac2ca032-cfb0-a24d-91c5-4d664307dad1
+
+random
+dir
+
+sendEmail
+dir
+
+captcha
+dir
+
+listener
+dir
+
+memcached
+dir
+
+security
+dir
+
+calendar
+dir
+
+mergeattr
+dir
+
+
+
+delete
+
+check
+dir
+
+web
+dir
+

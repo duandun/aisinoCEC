@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aisino.cec.product.dao.BinaryInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.aisino.cec.product.model.BinaryInfo" >
+    <id column="binary_info_id" property="binaryInfoId" jdbcType="CHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.aisino.cec.product.model.BinaryInfo" extends="BaseResultMap" >
+    <result column="tiny_info" property="tinyInfo" jdbcType="BINARY" />
+    <result column="standar_info" property="standarInfo" jdbcType="BINARY" />
+    <result column="big_info" property="bigInfo" jdbcType="BINARY" />
+    <result column="huge_info" property="hugeInfo" jdbcType="BINARY" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    binary_info_id
+  </sql>
+  <sql id="Blob_Column_List" >
+    tiny_info, standar_info, big_info, huge_info
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from b_binary_info
+    where binary_info_id = #{binaryInfoId,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from b_binary_info
+    where binary_info_id = #{binaryInfoId,jdbcType=CHAR}
+  </delete>
+  <insert id="insert" parameterType="com.aisino.cec.product.model.BinaryInfo" >
+    insert into b_binary_info (binary_info_id, tiny_info, standar_info, 
+      big_info, huge_info)
+    values (#{binaryInfoId,jdbcType=CHAR}, #{tinyInfo,jdbcType=BINARY}, #{standarInfo,jdbcType=BINARY}, 
+      #{bigInfo,jdbcType=BINARY}, #{hugeInfo,jdbcType=BINARY})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aisino.cec.product.model.BinaryInfo" >
+    insert into b_binary_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="binaryInfoId != null" >
+        binary_info_id,
+      </if>
+      <if test="tinyInfo != null" >
+        tiny_info,
+      </if>
+      <if test="standarInfo != null" >
+        standar_info,
+      </if>
+      <if test="bigInfo != null" >
+        big_info,
+      </if>
+      <if test="hugeInfo != null" >
+        huge_info,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="binaryInfoId != null" >
+        #{binaryInfoId,jdbcType=CHAR},
+      </if>
+      <if test="tinyInfo != null" >
+        #{tinyInfo,jdbcType=BINARY},
+      </if>
+      <if test="standarInfo != null" >
+        #{standarInfo,jdbcType=BINARY},
+      </if>
+      <if test="bigInfo != null" >
+        #{bigInfo,jdbcType=BINARY},
+      </if>
+      <if test="hugeInfo != null" >
+        #{hugeInfo,jdbcType=BINARY},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aisino.cec.product.model.BinaryInfo" >
+    update b_binary_info
+    <set >
+      <if test="tinyInfo != null" >
+        tiny_info = #{tinyInfo,jdbcType=BINARY},
+      </if>
+      <if test="standarInfo != null" >
+        standar_info = #{standarInfo,jdbcType=BINARY},
+      </if>
+      <if test="bigInfo != null" >
+        big_info = #{bigInfo,jdbcType=BINARY},
+      </if>
+      <if test="hugeInfo != null" >
+        huge_info = #{hugeInfo,jdbcType=BINARY},
+      </if>
+    </set>
+    where binary_info_id = #{binaryInfoId,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.aisino.cec.product.model.BinaryInfo" >
+    update b_binary_info
+    set tiny_info = #{tinyInfo,jdbcType=BINARY},
+      standar_info = #{standarInfo,jdbcType=BINARY},
+      big_info = #{bigInfo,jdbcType=BINARY},
+      huge_info = #{hugeInfo,jdbcType=BINARY}
+    where binary_info_id = #{binaryInfoId,jdbcType=CHAR}
+  </update>
+</mapper>

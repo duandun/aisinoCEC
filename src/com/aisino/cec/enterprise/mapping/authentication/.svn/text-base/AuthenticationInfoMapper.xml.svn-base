@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aisino.cec.enterprise.dao.authentication.AuthenticationInfoMapper" >
+	
+	<resultMap id="BaseResultMap" type="AuthenticationInfo">
+		<id column="authentication_id" property="authenticationId" jdbcType="VARCHAR" />
+		<result column="enterprise_id" property="enterpriseId" jdbcType="VARCHAR" />
+		<result column="enterprise_name" property="enterpriseName" jdbcType="VARCHAR" />
+		<result column="status" property="status" jdbcType="VARCHAR" />
+		<result column="status_desc" property="statusDesc" jdbcType="VARCHAR" />
+		<result column="apply_time" property="applyTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		authentication_id, enterprise_id, enterprise_name, status, status_desc, apply_time
+ 	 </sql>
+	
+	<insert id="insertAuthenticationInfo" parameterType="AuthenticationInfo">
+		insert into c_authentication_info
+		(
+			<include refid="Base_Column_List" />
+		)
+		values 
+		(
+			#{authenticationId, jdbcType=VARCHAR},
+			#{enterpriseId, jdbcType=VARCHAR},
+			#{enterpriseName, jdbcType=VARCHAR},
+			#{status, jdbcType=VARCHAR},
+			#{statusDesc, jdbcType=VARCHAR},
+			#{applyTime, jdbcType=TIMESTAMP}
+		)
+ 	</insert>
+  
+  	<update id="updateAuthenticationInfo" parameterType="AuthenticationInfo">
+  		update c_authentication_info 
+		set status = #{status, jdbcType=VARCHAR},
+			status_desc = #{statusDesc, jdbcType=VARCHAR}
+		where authentication_id = #{authenticationId, jdbcType=VARCHAR}
+  	</update>
+  	
+  	<select id="selectByEnterpriseId" parameterType="java.lang.String" resultMap="BaseResultMap">
+  		select 
+		<include refid="Base_Column_List" />
+		from c_authentication_info
+   		where enterprise_id = #{enterpriseId, jdbcType=VARCHAR}
+  	</select>
+  	
+  	<select id="selectByPrimaryId" parameterType="java.lang.String" resultMap="BaseResultMap">
+  		select 
+		<include refid="Base_Column_List" />
+		from c_authentication_info
+   		where authentication_id = #{authenticationId, jdbcType=VARCHAR}
+  	</select>
+  	
+  	<select id="selectByCondition" resultMap="BaseResultMap" 
+  		parameterType="com.aisino.cec.enterprise.conditionbean.AuthenticationInfoCondition">
+  		select 
+		<include refid="Base_Column_List" />
+		from c_authentication_info where 1=1
+		<trim>
+			<if test="enterpriseName != null">
+				and enterprise_name like CONCAT('%', #{enterpriseName, jdbcType=VARCHAR}, '%')
+			</if>
+			<if test="status != null">
+				and status = #{status, jdbcType=VARCHAR}
+			</if>
+			<if test="startApplyTime != null">
+				 <![CDATA[ and apply_time >= #{startApplyTime, jdbcType=TIMESTAMP} ]]>
+			</if>
+			<if test="endApplyTime != null">
+				 <![CDATA[ and apply_time < #{endApplyTime, jdbcType=TIMESTAMP} ]]>
+			</if>
+		</trim>
+		order by apply_time desc
+  	</select>
+</mapper>

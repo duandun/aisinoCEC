@@ -1,0 +1,56 @@
+10
+
+dir
+7819
+svn://192.168.3.98/zxaebp/aisinoCEC/WebRoot/js/views
+svn://192.168.3.98/zxaebp
+
+
+
+2015-05-20T01:25:54.656250Z
+7819
+liuyi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ac2ca032-cfb0-a24d-91c5-4d664307dad1
+
+
+
+
+
+
+
+
+((conflict account dir update edited deleted (version svn://192.168.3.98/zxaebp 4 7708 aisinoCEC/WebRoot/js/views/account none) (version svn://192.168.3.98/zxaebp 4 7740 aisinoCEC/WebRoot/js/views/account dir)))
+
+authentication
+dir
+
+auditInfo
+dir
+
+account
+dir
+
+
+
+delete
+
+classify
+dir
+
+user
+dir
+

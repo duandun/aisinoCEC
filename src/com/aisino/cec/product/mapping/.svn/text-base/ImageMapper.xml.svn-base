@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aisino.cec.product.dao.ImageMapper" >
+  <resultMap id="BaseResultMap" type="com.aisino.cec.product.model.Image" >
+    <id column="image_id" property="imageId" jdbcType="CHAR" />
+    <result column="front_name" property="frontName" jdbcType="VARCHAR" />
+    <result column="store_name" property="storeName" jdbcType="VARCHAR" />
+    <result column="desc_info" property="descInfo" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_user_id" property="createUserId" jdbcType="CHAR" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="modify_user_id" property="modifyUserId" jdbcType="CHAR" />
+    <result column="group_code" property="groupCode" jdbcType="CHAR" />
+    <result column="modify_info" property="modifyInfo" jdbcType="VARCHAR" />
+    <result column="uri" property="uri" jdbcType="VARCHAR" />
+    <result column="binary_info_id" property="binaryInfoId" jdbcType="CHAR" />
+    <result column="binary_info_type" property="binaryInfoType" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    image_id, front_name, store_name, desc_info, create_time, create_user_id, modify_time, 
+    modify_user_id, group_code, modify_info, uri, binary_info_id, binary_info_type
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from b_image
+    where image_id = #{imageId,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from b_image
+    where image_id = #{imageId,jdbcType=CHAR}
+  </delete>
+  <insert id="insert" parameterType="com.aisino.cec.product.model.Image" >
+    insert into b_image (image_id, front_name, store_name, 
+      desc_info, create_time, create_user_id, 
+      modify_time, modify_user_id, group_code, 
+      modify_info, uri, binary_info_id, 
+      binary_info_type)
+    values (#{imageId,jdbcType=CHAR}, #{frontName,jdbcType=VARCHAR}, #{storeName,jdbcType=VARCHAR}, 
+      #{descInfo,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{createUserId,jdbcType=CHAR}, 
+      #{modifyTime,jdbcType=TIMESTAMP}, #{modifyUserId,jdbcType=CHAR}, #{groupCode,jdbcType=CHAR}, 
+      #{modifyInfo,jdbcType=VARCHAR}, #{uri,jdbcType=VARCHAR}, #{binaryInfoId,jdbcType=CHAR}, 
+      #{binaryInfoType,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aisino.cec.product.model.Image" >
+    insert into b_image
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="imageId != null" >
+        image_id,
+      </if>
+      <if test="frontName != null" >
+        front_name,
+      </if>
+      <if test="storeName != null" >
+        store_name,
+      </if>
+      <if test="descInfo != null" >
+        desc_info,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="createUserId != null" >
+        create_user_id,
+      </if>
+      <if test="modifyTime != null" >
+        modify_time,
+      </if>
+      <if test="modifyUserId != null" >
+        modify_user_id,
+      </if>
+      <if test="groupCode != null" >
+        group_code,
+      </if>
+      <if test="modifyInfo != null" >
+        modify_info,
+      </if>
+      <if test="uri != null" >
+        uri,
+      </if>
+      <if test="binaryInfoId != null" >
+        binary_info_id,
+      </if>
+      <if test="binaryInfoType != null" >
+        binary_info_type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="imageId != null" >
+        #{imageId,jdbcType=CHAR},
+      </if>
+      <if test="frontName != null" >
+        #{frontName,jdbcType=VARCHAR},
+      </if>
+      <if test="storeName != null" >
+        #{storeName,jdbcType=VARCHAR},
+      </if>
+      <if test="descInfo != null" >
+        #{descInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null" >
+        #{createUserId,jdbcType=CHAR},
+      </if>
+      <if test="modifyTime != null" >
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyUserId != null" >
+        #{modifyUserId,jdbcType=CHAR},
+      </if>
+      <if test="groupCode != null" >
+        #{groupCode,jdbcType=CHAR},
+      </if>
+      <if test="modifyInfo != null" >
+        #{modifyInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="uri != null" >
+        #{uri,jdbcType=VARCHAR},
+      </if>
+      <if test="binaryInfoId != null" >
+        #{binaryInfoId,jdbcType=CHAR},
+      </if>
+      <if test="binaryInfoType != null" >
+        #{binaryInfoType,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aisino.cec.product.model.Image" >
+    update b_image
+    <set >
+      <if test="frontName != null" >
+        front_name = #{frontName,jdbcType=VARCHAR},
+      </if>
+      <if test="storeName != null" >
+        store_name = #{storeName,jdbcType=VARCHAR},
+      </if>
+      <if test="descInfo != null" >
+        desc_info = #{descInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null" >
+        create_user_id = #{createUserId,jdbcType=CHAR},
+      </if>
+      <if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyUserId != null" >
+        modify_user_id = #{modifyUserId,jdbcType=CHAR},
+      </if>
+      <if test="groupCode != null" >
+        group_code = #{groupCode,jdbcType=CHAR},
+      </if>
+      <if test="modifyInfo != null" >
+        modify_info = #{modifyInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="uri != null" >
+        uri = #{uri,jdbcType=VARCHAR},
+      </if>
+      <if test="binaryInfoId != null" >
+        binary_info_id = #{binaryInfoId,jdbcType=CHAR},
+      </if>
+      <if test="binaryInfoType != null" >
+        binary_info_type = #{binaryInfoType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where image_id = #{imageId,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aisino.cec.product.model.Image" >
+    update b_image
+    set front_name = #{frontName,jdbcType=VARCHAR},
+      store_name = #{storeName,jdbcType=VARCHAR},
+      desc_info = #{descInfo,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_user_id = #{createUserId,jdbcType=CHAR},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      modify_user_id = #{modifyUserId,jdbcType=CHAR},
+      group_code = #{groupCode,jdbcType=CHAR},
+      modify_info = #{modifyInfo,jdbcType=VARCHAR},
+      uri = #{uri,jdbcType=VARCHAR},
+      binary_info_id = #{binaryInfoId,jdbcType=CHAR},
+      binary_info_type = #{binaryInfoType,jdbcType=VARCHAR}
+    where image_id = #{imageId,jdbcType=CHAR}
+  </update>
+</mapper>

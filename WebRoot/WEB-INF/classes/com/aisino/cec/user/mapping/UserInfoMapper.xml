@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aisino.cec.user.dao.UserInfoMapper" >
+	<resultMap id="BaseResultMap" type="UserInfo">
+		<id column="user_info_id" property="userInfoId" jdbcType="VARCHAR" />
+		<result column="user_id" property="userId" jdbcType="VARCHAR" />
+		<result column="user_real_name" property="userRealName" jdbcType="VARCHAR" />
+		<result column="user_gender" property="userGender" jdbcType="VARCHAR" />
+		<result column="user_position" property="userPosition" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<insert id="saveUserInfo" parameterType="UserInfo">
+		insert into c_user_info
+		(
+			user_info_id, 
+			user_id, 
+			user_real_name, 
+			user_gender, 
+			user_position
+		)
+		values 
+		(
+			#{userInfoId, jdbcType=VARCHAR},
+			#{userId, jdbcType=VARCHAR},
+			#{userRealName, jdbcType=VARCHAR},
+			#{userGender, jdbcType=VARCHAR},
+			#{userPosition, jdbcType=VARCHAR}
+		)
+ 	</insert>
+  
+  	<update id="updateUserInfo" parameterType="UserInfo">
+  		update c_user_info 
+		set user_real_name = #{userRealName, jdbcType=VARCHAR},
+			user_gender = #{userGender, jdbcType=VARCHAR},
+			user_position = #{userPosition, jdbcType=VARCHAR}
+		where user_info_id = #{userInfoId, jdbcType=VARCHAR}
+  	</update>
+  	
+  	<select id="findUserInfoByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
+  		select * from c_user_info
+   		where user_id = #{userId, jdbcType=VARCHAR}
+  	</select>
+</mapper>

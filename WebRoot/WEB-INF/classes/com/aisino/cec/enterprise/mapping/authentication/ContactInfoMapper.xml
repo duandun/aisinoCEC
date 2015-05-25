@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aisino.cec.enterprise.dao.authentication.ContactInfoMapper" >
+	
+	<resultMap id="BaseResultMap" type="ContactInfo">
+		<id column="contact_id" property="contactId" jdbcType="VARCHAR" />
+		<result column="contact_name" property="contactName" jdbcType="VARCHAR" />
+		<result column="contact_phone" property="contactPhone" jdbcType="VARCHAR" />
+		<result column="contact_email" property="contactEmail" jdbcType="VARCHAR" />
+		<result column="authentication_id" property="authenticationId" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		contact_id, contact_name, contact_phone, contact_email, authentication_id
+ 	 </sql>
+	
+	<insert id="insertContactInfo" parameterType="ContactInfo">
+		insert into c_contact_info
+		(
+			<include refid="Base_Column_List" />
+		)
+		values 
+		(
+			#{contactId, jdbcType=VARCHAR},
+			#{contactName, jdbcType=VARCHAR},
+			#{contactPhone, jdbcType=VARCHAR},
+			#{contactEmail, jdbcType=VARCHAR},
+			#{authenticationId, jdbcType=VARCHAR}
+		)
+ 	</insert>
+  
+  	<update id="updateContactInfo" parameterType="ContactInfo">
+  		update c_contact_info 
+		set contact_name = #{contactName, jdbcType=VARCHAR},
+			contact_phone = #{contactPhone, jdbcType=VARCHAR},
+			contact_email = #{contactEmail, jdbcType=VARCHAR}
+		where authentication_id = #{authenticationId, jdbcType=VARCHAR}
+  	</update>
+  	
+  	<select id="selectByAuthenticationId" parameterType="java.lang.String" resultMap="BaseResultMap">
+  		select 
+		<include refid="Base_Column_List" />
+		from c_contact_info
+   		where authentication_id = #{authenticationId, jdbcType=VARCHAR}
+  	</select>
+  	
+  	<select id="selectByPrimaryId" parameterType="java.lang.String" resultMap="BaseResultMap">
+  		select 
+		<include refid="Base_Column_List" />
+		from c_contact_info
+   		where contact_id = #{contactId, jdbcType=VARCHAR}
+  	</select>
+</mapper>

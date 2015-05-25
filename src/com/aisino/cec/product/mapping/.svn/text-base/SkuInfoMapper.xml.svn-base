@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aisino.cec.product.dao.SkuInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.aisino.cec.product.model.SkuInfo" >
+    <result column="sku_info_id" property="skuInfoId" jdbcType="CHAR" />
+    <result column="sku_id" property="skuId" jdbcType="CHAR" />
+    <result column="create_user_id" property="createUserId" jdbcType="CHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modify_user_id" property="modifyUserId" jdbcType="CHAR" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="modify_info" property="modifyInfo" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.aisino.cec.product.model.SkuInfo" extends="BaseResultMap" >
+    <result column="sku_gen_info" property="skuGenInfo" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Blob_Column_List" >
+    sku_gen_info
+  </sql>
+  <insert id="insert" parameterType="com.aisino.cec.product.model.SkuInfo" >
+    insert into p_sku_info (sku_info_id, sku_id, create_user_id, 
+      create_time, modify_user_id, modify_time, 
+      modify_info, sku_gen_info)
+    values (#{skuInfoId,jdbcType=CHAR}, #{skuId,jdbcType=CHAR}, #{createUserId,jdbcType=CHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{modifyUserId,jdbcType=CHAR}, #{modifyTime,jdbcType=TIMESTAMP}, 
+      #{modifyInfo,jdbcType=VARCHAR}, #{skuGenInfo,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aisino.cec.product.model.SkuInfo" >
+    insert into p_sku_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="skuInfoId != null" >
+        sku_info_id,
+      </if>
+      <if test="skuId != null" >
+        sku_id,
+      </if>
+      <if test="createUserId != null" >
+        create_user_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="modifyUserId != null" >
+        modify_user_id,
+      </if>
+      <if test="modifyTime != null" >
+        modify_time,
+      </if>
+      <if test="modifyInfo != null" >
+        modify_info,
+      </if>
+      <if test="skuGenInfo != null" >
+        sku_gen_info,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="skuInfoId != null" >
+        #{skuInfoId,jdbcType=CHAR},
+      </if>
+      <if test="skuId != null" >
+        #{skuId,jdbcType=CHAR},
+      </if>
+      <if test="createUserId != null" >
+        #{createUserId,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyUserId != null" >
+        #{modifyUserId,jdbcType=CHAR},
+      </if>
+      <if test="modifyTime != null" >
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyInfo != null" >
+        #{modifyInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="skuGenInfo != null" >
+        #{skuGenInfo,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>

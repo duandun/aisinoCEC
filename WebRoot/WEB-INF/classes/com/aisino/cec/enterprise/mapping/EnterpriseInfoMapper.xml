@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aisino.cec.enterprise.dao.EnterpriseInfoMapper" >
+	<resultMap id="BaseResultMap" type="EnterpriseInfo">
+		<id column="enterprise_info_id" property="enterpriseInfoId" jdbcType="VARCHAR" />
+		<result column="enterprise_id" property="enterpriseId" jdbcType="VARCHAR" />
+		<result column="main_industry" property="mainIndustry" jdbcType="VARCHAR" />
+		<result column="main_product" property="mainProduct" jdbcType="VARCHAR" />
+		<result column="province" property="province" jdbcType="VARCHAR" />
+		<result column="city" property="city" jdbcType="VARCHAR" />
+		<result column="district" property="district" jdbcType="VARCHAR" />
+		<result column="street" property="street" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<insert id="saveEnterpriseInfo" parameterType="EnterpriseInfo">
+		insert into c_enterprise_info
+		(
+			enterprise_info_id, 
+			enterprise_id,
+			main_industry,
+			main_product,
+			province,
+			city,
+			district,
+			street
+		)
+		values 
+		(
+			#{enterpriseInfoId, jdbcType=VARCHAR},
+			#{enterpriseId, jdbcType=VARCHAR},
+			#{mainIndustry, jdbcType=VARCHAR},
+			#{mainProduct, jdbcType=VARCHAR},
+			#{province, jdbcType=VARCHAR},
+			#{city, jdbcType=VARCHAR},
+			#{district, jdbcType=VARCHAR},
+			#{street, jdbcType=VARCHAR}
+		)
+ 	</insert>
+  
+  	<update id="updateEnterpriseInfo" parameterType="EnterpriseInfo">
+  		update c_enterprise_info 
+		set main_industry = #{mainIndustry, jdbcType=VARCHAR},
+			main_product = #{mainProduct, jdbcType=VARCHAR},
+			province = #{province, jdbcType=VARCHAR},
+			city = #{city, jdbcType=VARCHAR},
+			district = #{district, jdbcType=VARCHAR},
+			street = #{street, jdbcType=VARCHAR}
+		where enterprise_info_id = #{enterpriseInfoId, jdbcType=VARCHAR}
+  	</update>
+  	
+  	<select id="findEnterpriseInfoByEtpId" parameterType="java.lang.String" resultMap="BaseResultMap">
+  		select * from c_enterprise_info
+   		where enterprise_id = #{enterpriseId, jdbcType=VARCHAR}
+  	</select>
+</mapper>

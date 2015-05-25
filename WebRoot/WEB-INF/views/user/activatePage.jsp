@@ -1,0 +1,40 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    
+    <title>My JSP 'registerSuccess.jsp' starting page</title>
+    <%@include file="/WEB-INF/views/public/import.jsp"%>
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+	<!--
+	<link rel="stylesheet" type="text/css" href="styles.css">
+	-->
+
+  </head>
+   
+  <body>
+     <div class="content">
+	    	<div class="container">
+	    		<!-- userwall -->
+	    		<div class="userwall register-login-unit">
+	    			<span>${activateInfo}</span>
+			  		<c:if test="${activateInfo == mailActivated}">
+			  			<a href="<c:url value="/"/>">登录</a>
+			  		</c:if>
+			  		<c:if test="${activateInfo == verifyCodeWrong || activateInfo == verifyCodeExpire}">
+						<button type="button" class="btn btn-primary" onclick="register.sendMailAgain('${email}');">重发激活邮件</button>
+					</c:if>
+	    		</div>
+	    	</div>
+	    </div>
+	    <script type="text/javascript" src="<%=path %>js/views/user/register.js"></script>
+	    <script>
+				
+	    </script>
+  </body>
+</html>

@@ -1,0 +1,52 @@
+10
+
+dir
+7821
+svn://192.168.3.98/zxaebp/aisinoCEC/src/com/aisino/cec/enterprise
+svn://192.168.3.98/zxaebp
+
+
+
+2015-05-20T02:03:06.421875Z
+7821
+liuyi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ac2ca032-cfb0-a24d-91c5-4d664307dad1
+
+enumpackage
+dir
+
+model
+dir
+
+service
+dir
+
+controller
+dir
+
+dao
+dir
+
+vo
+dir
+
+mapping
+dir
+
+conditionbean
+dir
+

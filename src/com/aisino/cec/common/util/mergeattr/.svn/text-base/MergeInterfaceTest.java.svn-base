@@ -1,0 +1,111 @@
+package com.aisino.cec.common.util.mergeattr;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+import org.junit.Test;
+
+public class MergeInterfaceTest {
+	private Set<Object> publicSet = null;
+	private Set<Object> privateSet = null;
+
+	private Set<IShow> publicSet2 = null;
+	private Set<IShow> privateSet2 = null;
+
+	private void setUp() {
+		publicSet = new HashSet<Object>();
+		privateSet = new HashSet<Object>();
+
+		new IPrepareParams(){
+			public IPrepareParams preparePrivateParams() {
+
+				for (int i = 0; i < 10; i++) {
+					final PrivateParam privateParam = new PrivateParam(
+							"00" + i, "Param00" + i, "privateParam00" + i
+									+ "Value", "privateParam00" + i + "SkuId");
+					privateSet.add(privateParam);
+				}
+				return this;
+			}
+
+			public IPrepareParams  preparePublicParams() {
+
+				for (int i = 0; i < 10; i++) {
+					final PublicParam publicParams = new PublicParam("00"
+							+ (i * 2), "Param00" + (i * 2), "publicParams00"
+							+ (i * 2) + "Value", "publicParams00" + (i * 2)
+							+ "SeriesNum");
+					publicSet.add(publicParams);
+				}
+				return this;
+			}
+		}.preparePrivateParams().preparePublicParams();;
+
+	}
+
+
+	private void setUp2() {
+		publicSet2 = new HashSet<IShow>();
+		privateSet2 = new HashSet<IShow>();
+
+		new IPrepareParams() {
+			public IPrepareParams preparePrivateParams() {
+
+				for (int i = 0; i < 20; i++) {
+					final IShow privateParam = new PrivateParam2("200"
+							+ i, "Param200" + i, "privateParam200" + i + "Value",
+							"privateParam200" + i + "SkuId2");
+					privateSet2.add(privateParam);
+				}
+				return this;
+			}
+
+			public IPrepareParams preparePublicParams() {
+
+				for (int i = 0; i < 20; i++) {
+					final IShow publicParams = new PublicParam2("200"
+							+ (i * 2), "Param200" + (i * 2), "publicParams200"
+							+ (i * 2) + "Value", "publicParams200" + (i * 2)
+							+ "2SeriesNum");
+					publicSet2.add(publicParams);
+				}
+				return this;
+			}
+		}.preparePrivateParams().preparePublicParams();
+	}
+	
+	
+	interface IPrepareParams{
+		IPrepareParams preparePrivateParams();
+		IPrepareParams preparePublicParams();
+	}
+
+	@Test
+	public void test1() {
+		setUp();
+		IParamStrategy<Object> ps = new ExtendsParamStrategy<Object>();
+		Set<Object> mergeParamsSet = ps.mergeParamsSet(privateSet,
+				publicSet);
+		System.out.println(privateSet);
+		System.out.println(publicSet);
+		System.out.println(mergeParamsSet.size());
+	}
+
+	@Test
+	public void test2() {
+		setUp2();
+		IParamStrategy<IShow> ps = new ProxyParamStrategy<IShow>();
+		Set<IShow> mergeParamsSet = ps.mergeParamsSet(privateSet2,
+				publicSet2);
+		System.out.println(privateSet2);
+		System.out.println(publicSet2);
+		System.out.println(mergeParamsSet.size());
+		System.out.println("________________________");
+		for(Iterator<IShow> iter=mergeParamsSet.iterator();iter.hasNext();){
+			IShow next = iter.next();
+			System.out.println("element is:"+next);
+		}
+	}
+
+}

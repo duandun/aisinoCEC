@@ -1,0 +1,75 @@
+10
+
+dir
+7808
+svn://192.168.3.98/zxaebp/aisinoCEC/src/com/aisino/cec
+svn://192.168.3.98/zxaebp
+
+
+
+2015-05-18T03:19:56.843750Z
+7808
+jiawenhe
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ac2ca032-cfb0-a24d-91c5-4d664307dad1
+
+
+
+
+
+
+
+
+((conflict account dir update deleted edited (version svn://192.168.3.98/zxaebp 4 7705 aisinoCEC/src/com/aisino/cec/account dir) (version svn://192.168.3.98/zxaebp 4 7731 aisinoCEC/src/com/aisino/cec/account none)))
+
+test
+dir
+
+enterprise
+dir
+
+product
+dir
+
+common
+dir
+
+account
+dir
+
+
+
+add
+
+
+
+
+
+
+
+
+
+
+
+
+
+copied
+svn://192.168.3.98/zxaebp/aisinoCEC/src/com/aisino/cec/account
+7705
+
+user
+dir
+

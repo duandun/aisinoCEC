@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aisino.cec.enterprise.dao.authentication.TaxInfoMapper" >
+	
+	<resultMap id="BaseResultMap" type="TaxInfo">
+		<id column="tax_id" property="taxId" jdbcType="VARCHAR" />
+		<result column="tax_reg_num" property="taxRegNum" jdbcType="VARCHAR" />
+		<result column="tax_payer_id_num" property="taxpayerIdNum" jdbcType="VARCHAR" />
+		<result column="tax_reg_card" property="taxRegCard" jdbcType="VARCHAR" />
+		<result column="authentication_id" property="authenticationId" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		tax_id, tax_reg_num, tax_payer_id_num, tax_reg_card, authentication_id
+ 	 </sql>
+	
+	<insert id="insertTaxInfo" parameterType="TaxInfo">
+		insert into c_tax_info
+		(
+			<include refid="Base_Column_List" />
+		)
+		values 
+		(
+			#{taxId, jdbcType=VARCHAR},
+			#{taxRegNum, jdbcType=VARCHAR},
+			#{taxpayerIdNum, jdbcType=VARCHAR},
+			#{taxRegCard, jdbcType=VARCHAR},
+			#{authenticationId, jdbcType=VARCHAR}
+		)
+ 	</insert>
+  
+  	<update id="updateTaxInfo" parameterType="TaxInfo">
+  		update c_tax_info 
+		set tax_reg_num = #{taxRegNum, jdbcType=VARCHAR},
+			tax_payer_id_num = #{taxpayerIdNum, jdbcType=VARCHAR},
+			tax_reg_card = #{taxRegCard, jdbcType=VARCHAR}
+		where authentication_id = #{authenticationId, jdbcType=VARCHAR}
+  	</update>
+  	
+  	<select id="selectByAuthenticationId" parameterType="java.lang.String" resultMap="BaseResultMap">
+  		select 
+		<include refid="Base_Column_List" />
+		from c_tax_info
+   		where authentication_id = #{authenticationId, jdbcType=VARCHAR}
+  	</select>
+  	
+  	<select id="selectByPrimaryId" parameterType="java.lang.String" resultMap="BaseResultMap">
+  		select 
+		<include refid="Base_Column_List" />
+		from c_tax_info
+   		where tax_id = #{taxId, jdbcType=VARCHAR}
+  	</select>
+</mapper>

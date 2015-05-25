@@ -1,0 +1,20 @@
+package com.aisino.cec.common.util.mergeattr;
+
+import java.util.Set;
+
+/**
+ * 对象集合合并接口
+ * @author jwh
+ *
+ */
+public interface IParamStrategy<T> {
+	/**
+	 * 合并两个集合中的对象为一个集合，
+	 * @param privateSet
+	 * @param publicSet
+	 * @return
+	 */
+	Set<T> mergeParamsSet(Set<T> privateSet,Set<T> publicSet);
+	
+	Set<T> mergeMoreParamsSet(Set<T>... sets);
+}

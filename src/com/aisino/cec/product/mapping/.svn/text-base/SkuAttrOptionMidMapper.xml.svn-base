@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aisino.cec.product.dao.SkuAttrOptionMidMapper" >
+  <resultMap id="BaseResultMap" type="com.aisino.cec.product.model.SkuAttrOptionMid" >
+    <id column="sku_attr_option_mid_id" property="skuAttrOptionMidId" jdbcType="CHAR" />
+    <result column="query_value_id" property="queryValueId" jdbcType="CHAR" />
+    <result column="sku_attr_id" property="skuAttrId" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    sku_attr_option_mid_id, query_value_id, sku_attr_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from p_sku_attr_option_mid
+    where sku_attr_option_mid_id = #{skuAttrOptionMidId,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from p_sku_attr_option_mid
+    where sku_attr_option_mid_id = #{skuAttrOptionMidId,jdbcType=CHAR}
+  </delete>
+  <insert id="insert" parameterType="com.aisino.cec.product.model.SkuAttrOptionMid" >
+    insert into p_sku_attr_option_mid (sku_attr_option_mid_id, query_value_id, sku_attr_id
+      )
+    values (#{skuAttrOptionMidId,jdbcType=CHAR}, #{queryValueId,jdbcType=CHAR}, #{skuAttrId,jdbcType=CHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.aisino.cec.product.model.SkuAttrOptionMid" >
+    insert into p_sku_attr_option_mid
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="skuAttrOptionMidId != null" >
+        sku_attr_option_mid_id,
+      </if>
+      <if test="queryValueId != null" >
+        query_value_id,
+      </if>
+      <if test="skuAttrId != null" >
+        sku_attr_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="skuAttrOptionMidId != null" >
+        #{skuAttrOptionMidId,jdbcType=CHAR},
+      </if>
+      <if test="queryValueId != null" >
+        #{queryValueId,jdbcType=CHAR},
+      </if>
+      <if test="skuAttrId != null" >
+        #{skuAttrId,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aisino.cec.product.model.SkuAttrOptionMid" >
+    update p_sku_attr_option_mid
+    <set >
+      <if test="queryValueId != null" >
+        query_value_id = #{queryValueId,jdbcType=CHAR},
+      </if>
+      <if test="skuAttrId != null" >
+        sku_attr_id = #{skuAttrId,jdbcType=CHAR},
+      </if>
+    </set>
+    where sku_attr_option_mid_id = #{skuAttrOptionMidId,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aisino.cec.product.model.SkuAttrOptionMid" >
+    update p_sku_attr_option_mid
+    set query_value_id = #{queryValueId,jdbcType=CHAR},
+      sku_attr_id = #{skuAttrId,jdbcType=CHAR}
+    where sku_attr_option_mid_id = #{skuAttrOptionMidId,jdbcType=CHAR}
+  </update>
+</mapper>

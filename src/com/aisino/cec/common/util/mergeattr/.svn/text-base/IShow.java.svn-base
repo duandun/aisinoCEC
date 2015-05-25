@@ -1,0 +1,6 @@
+package com.aisino.cec.common.util.mergeattr;
+
+public interface IShow {
+	String getName();
+	String getId();
+}

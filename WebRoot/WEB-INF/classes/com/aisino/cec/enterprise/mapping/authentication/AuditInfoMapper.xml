@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aisino.cec.enterprise.dao.authentication.AuditInfoMapper" >
+	
+	<resultMap id="BaseResultMap" type="AuditInfo">
+		<id column="audit_id" property="auditId" jdbcType="VARCHAR" />
+		<result column="audit_status" property="auditStatus" jdbcType="VARCHAR" />
+		<result column="audit_status_desc" property="auditStatusDesc" jdbcType="VARCHAR" />
+		<result column="audit_opinion" property="auditOpinion" jdbcType="VARCHAR" />
+		<result column="auditor_id" property="auditorId" jdbcType="VARCHAR" />
+		<result column="auditor_name" property="auditorName" jdbcType="VARCHAR" />
+		<result column="audit_time" property="auditTime" jdbcType="TIMESTAMP" />
+		<result column="authentication_id" property="authenticationId" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		audit_id, audit_status, audit_status_desc, audit_opinion, auditor_id, auditor_name, audit_time, authentication_id
+ 	</sql>
+	
+	<insert id="saveAuditInfo" parameterType="AuditInfo">
+		insert into c_audit_info
+		(
+			<include refid="Base_Column_List" />
+		)
+		values 
+		(
+			#{auditId, jdbcType=VARCHAR},
+			#{auditStatus, jdbcType=VARCHAR},
+			#{auditStatusDesc, jdbcType=VARCHAR},
+			#{auditOpinion, jdbcType=VARCHAR},
+			#{auditorId, jdbcType=VARCHAR},
+			#{auditorName, jdbcType=VARCHAR},
+			#{auditTime, jdbcType=TIMESTAMP},
+			#{authenticationId, jdbcType=VARCHAR}
+		)
+ 	</insert>
+  
+  	<select id="findAuditInfo" parameterType="java.lang.String" resultMap="BaseResultMap">
+  		select 
+		<include refid="Base_Column_List" />
+		from c_audit_info
+   		where authentication_id = #{authenticationId, jdbcType=VARCHAR}
+   		order by audit_time desc
+  	</select>
+  	
+</mapper>

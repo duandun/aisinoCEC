@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aisino.cec.product.dao.CategoryMapper" >
+  <resultMap id="BaseResultMap" type="com.aisino.cec.product.model.Category" >
+    <id column="category_id" property="categoryId" jdbcType="CHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="desc_info" property="descInfo" jdbcType="VARCHAR" />
+    <result column="main_code" property="mainCode" jdbcType="CHAR" />
+    <result column="secondary_code" property="secondaryCode" jdbcType="CHAR" />
+    <result column="serial_num" property="serialNum" jdbcType="CHAR" />
+    <result column="state" property="state" jdbcType="VARCHAR" />
+    <result column="image_id" property="imageId" jdbcType="CHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_user_id" property="createUserId" jdbcType="CHAR" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="modify_user_id" property="modifyUserId" jdbcType="CHAR" />
+    <result column="modify_info" property="modifyInfo" jdbcType="VARCHAR" />
+    <result column="group_code" property="groupCode" jdbcType="CHAR" />
+    <result column="link_info" property="linkInfo" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    category_id, name, desc_info, main_code, secondary_code, serial_num, state, image_id, 
+    create_time, create_user_id, modify_time, modify_user_id, modify_info, group_code, 
+    link_info
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from p_category
+    where category_id = #{categoryId,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from p_category
+    where category_id = #{categoryId,jdbcType=CHAR}
+  </delete>
+  <insert id="insert" parameterType="com.aisino.cec.product.model.Category" >
+    insert into p_category (category_id, name, desc_info, 
+      main_code, secondary_code, serial_num, 
+      state, image_id, create_time, 
+      create_user_id, modify_time, modify_user_id, 
+      modify_info, group_code, link_info
+      )
+    values (#{categoryId,jdbcType=CHAR}, #{name,jdbcType=VARCHAR}, #{descInfo,jdbcType=VARCHAR}, 
+      #{mainCode,jdbcType=CHAR}, #{secondaryCode,jdbcType=CHAR}, #{serialNum,jdbcType=CHAR}, 
+      #{state,jdbcType=VARCHAR}, #{imageId,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{createUserId,jdbcType=CHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{modifyUserId,jdbcType=CHAR}, 
+      #{modifyInfo,jdbcType=VARCHAR}, #{groupCode,jdbcType=CHAR}, #{linkInfo,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.aisino.cec.product.model.Category" >
+    insert into p_category
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="categoryId != null" >
+        category_id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="descInfo != null" >
+        desc_info,
+      </if>
+      <if test="mainCode != null" >
+        main_code,
+      </if>
+      <if test="secondaryCode != null" >
+        secondary_code,
+      </if>
+      <if test="serialNum != null" >
+        serial_num,
+      </if>
+      <if test="state != null" >
+        state,
+      </if>
+      <if test="imageId != null" >
+        image_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="createUserId != null" >
+        create_user_id,
+      </if>
+      <if test="modifyTime != null" >
+        modify_time,
+      </if>
+      <if test="modifyUserId != null" >
+        modify_user_id,
+      </if>
+      <if test="modifyInfo != null" >
+        modify_info,
+      </if>
+      <if test="groupCode != null" >
+        group_code,
+      </if>
+      <if test="linkInfo != null" >
+        link_info,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="categoryId != null" >
+        #{categoryId,jdbcType=CHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="descInfo != null" >
+        #{descInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="mainCode != null" >
+        #{mainCode,jdbcType=CHAR},
+      </if>
+      <if test="secondaryCode != null" >
+        #{secondaryCode,jdbcType=CHAR},
+      </if>
+      <if test="serialNum != null" >
+        #{serialNum,jdbcType=CHAR},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="imageId != null" >
+        #{imageId,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null" >
+        #{createUserId,jdbcType=CHAR},
+      </if>
+      <if test="modifyTime != null" >
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyUserId != null" >
+        #{modifyUserId,jdbcType=CHAR},
+      </if>
+      <if test="modifyInfo != null" >
+        #{modifyInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="groupCode != null" >
+        #{groupCode,jdbcType=CHAR},
+      </if>
+      <if test="linkInfo != null" >
+        #{linkInfo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aisino.cec.product.model.Category" >
+    update p_category
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="descInfo != null" >
+        desc_info = #{descInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="mainCode != null" >
+        main_code = #{mainCode,jdbcType=CHAR},
+      </if>
+      <if test="secondaryCode != null" >
+        secondary_code = #{secondaryCode,jdbcType=CHAR},
+      </if>
+      <if test="serialNum != null" >
+        serial_num = #{serialNum,jdbcType=CHAR},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="imageId != null" >
+        image_id = #{imageId,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null" >
+        create_user_id = #{createUserId,jdbcType=CHAR},
+      </if>
+      <if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyUserId != null" >
+        modify_user_id = #{modifyUserId,jdbcType=CHAR},
+      </if>
+      <if test="modifyInfo != null" >
+        modify_info = #{modifyInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="groupCode != null" >
+        group_code = #{groupCode,jdbcType=CHAR},
+      </if>
+      <if test="linkInfo != null" >
+        link_info = #{linkInfo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where category_id = #{categoryId,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aisino.cec.product.model.Category" >
+    update p_category
+    set name = #{name,jdbcType=VARCHAR},
+      desc_info = #{descInfo,jdbcType=VARCHAR},
+      main_code = #{mainCode,jdbcType=CHAR},
+      secondary_code = #{secondaryCode,jdbcType=CHAR},
+      serial_num = #{serialNum,jdbcType=CHAR},
+      state = #{state,jdbcType=VARCHAR},
+      image_id = #{imageId,jdbcType=CHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_user_id = #{createUserId,jdbcType=CHAR},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      modify_user_id = #{modifyUserId,jdbcType=CHAR},
+      modify_info = #{modifyInfo,jdbcType=VARCHAR},
+      group_code = #{groupCode,jdbcType=CHAR},
+      link_info = #{linkInfo,jdbcType=VARCHAR}
+    where category_id = #{categoryId,jdbcType=CHAR}
+  </update>
+</mapper>
