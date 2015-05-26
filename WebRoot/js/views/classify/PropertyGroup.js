@@ -136,6 +136,7 @@
 			$group = $("<div>").append($inputBox).append("\n").append($opButton).append("\n").append($disButton).css("padding","10px");
 
 			$opButton.html("修改");
+
 			$opButton.click(function(){
 //				$("#propertyName").val($a.html());
 //				$("#propertyDes").val(setting.inputBoxDes);
@@ -183,8 +184,6 @@
 								$requiredRadio.eq(i).iCheck('check');
 							}
 						}
-						
-						console.log(data);
 					},
 					error: function(data) {
 						alert("出错了！");
@@ -193,9 +192,28 @@
 				
 				
 				$("#propertyModal button.commit")[0].onclick = function() {
-					$.ajax({
-						
-					});
+					if($("#addSkuForm").valid()) {
+						$.ajax({
+							url: basePath + "skuManage/updateSkuAttr.html?" + new Date().getTime(),
+							dataType: "json",
+							async: false,
+							type: "post",
+							data: $("#addSkuForm").serialize(),
+							success: function(data) {
+								if(data.result == "true") {
+									//若状态为启用状态
+									if(setting.status=="enable") {
+										$group.removeClass("delete");
+									}
+									$("#propertyModal").modal('hide');
+								}
+							},
+							error: function(data) {
+								alert("出错了！");
+							}
+						});
+					}
+					
 				};
 				
 				$("#enable").on("ifChecked",function(event){
@@ -211,24 +229,48 @@
 			$disButton.click(function(){
 				//显示二级属性列表(传递主属性id？或者传递主属性名称？)
 				//根据主属性ID或者名称查表获得二级属性列表
-				var mainPropertyId;
+				var mainPropertyId, $group, skuAttrId = $inputBox.attr("id");
 				$("#right-plane ul.list").empty();
-				for(var i = 0;i<20;i++) {
-					var setting = {
-						inputBoxValue: i,
-						status: "mod",
-						imgPath: "http://192.168.3.125:8888/pic/100.jpg" 
-					};
-
 				$("#add-skuValue").show();
 				$("#searchSkuValue").show();
 				$("#right-plane input.searchInput").show();
 				$("#choosePic").show();
+				$("#right-plane div.mainProperty").show();
 				$("#right-plane div.mainProperty label").html($inputBox.val());
-				var $group = createSkuValue(setting);
-				$("#right-plane ul.list").append($group);
-				}
-
+				$("#right-plane div.mainProperty label").attr("skuAttrId", skuAttrId);
+				
+				//展示sku属性值列表
+				$.ajax({
+					url: basePath + "skuManage/skuOption/" + skuAttrId +".html?" + new Date().getTime(),
+					dataType: "json",
+					type: "get",
+					async: false,
+					data: {
+						
+					},
+					success: function(data) {
+						console.log(data);
+						$.each(data, function(i,item){
+							var setting = {
+									inputBoxValue: item.value,
+									propertyId: item.skuOptionId
+								};
+							if(item.state == "sku_attr_enable") {
+								setting.status = "enable";
+							} else {
+								setting.status = "disable";
+							}
+							$group = createSkuValue(setting);
+							$("#right-plane ul.list").append($group);
+							
+						});
+						
+					},
+					error: function(data) {
+						alert("出错了！");
+					}
+				});
+				
 			});
 			
 			if(setting.status == "disable") {
@@ -247,7 +289,7 @@
 		var $inputBox, $opButton, $reButton, $group, $a, $img, $imgDiv;
 
 			$reButton = $("<button>").attr("class", "btn btn-primary btn-sm").html("移除");
-			$inputBox = $("<input>").val(setting.inputBoxValue).attr("readonly", "readonly").css("width", "200px").addClass("form-control col-lg-6");
+			$inputBox = $("<input>").val(setting.inputBoxValue).attr("id", setting.propertyId).attr("readonly", "readonly").css("width", "200px").addClass("form-control col-lg-6");
 			$opButton = $("<button>").attr("class", "btn btn-primary btn-sm").html("修改");
 			$img = $("<img>").attr("src", setting.imgPath).css("width", "45px").css("height", "45px");
 //			$imgDiv = $("<div>").css("width", "100px").css("height", "100px").css("float", "left").append($img);
@@ -268,6 +310,10 @@
 				$("#disable").on("ifChecked", function(event){
 					setting.status = "disable";
 				});	
+				//todo  sku属性值的修改
+				
+				
+				
 				
 				$("#propertyModal button.commit")[0].onclick = function() {
 					//todo 进行ajax调用，修改库表中的值
@@ -292,7 +338,7 @@
 	};
 
 	window.PropertyGroup = $.fn.PropertyGroup = {
-
+		
 		init: function(setting) {
 			var setting = $.extend({}, defaultSetting, setting), $group;
 			switch(setting.category) {

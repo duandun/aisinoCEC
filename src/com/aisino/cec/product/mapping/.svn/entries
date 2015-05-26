@@ -60,40 +60,6 @@ jiawenhe
 
 8138
 
-SkuInfoMapper.xml
-file
-
-
-
-
-2015-05-25T02:16:16.072372Z
-d5b0b56b957726d488a52865120c0168
-2015-05-20T03:10:25.953125Z
-7832
-jiawenhe
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-3243
-
 SpecificationCategoryMapper.xml
 file
 
@@ -127,6 +93,40 @@ jiawenhe
 
 
 4039
+
+SkuInfoMapper.xml
+file
+
+
+
+
+2015-05-25T02:16:16.072372Z
+d5b0b56b957726d488a52865120c0168
+2015-05-20T03:10:25.953125Z
+7832
+jiawenhe
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+3243
 
 SkuAttrOptionMidMapper.xml
 file
@@ -230,22 +230,17 @@ jiawenhe
 
 7705
 
-CustomParamMapper.xml
+SkuOptionMapper.xml
 file
+7854
 
 
 
-
-2015-05-25T02:16:16.077372Z
-891f8c843eb9a441408a025094375cc2
-2015-05-20T03:10:25.953125Z
-7832
-jiawenhe
-
-
-
-
-
+2015-05-25T09:01:12.617055Z
+f68622b8a6a0bbdfb5d43230e9e1586b
+2015-05-25T08:59:43.421875Z
+7854
+liuyi
 
 
 
@@ -262,7 +257,12 @@ jiawenhe
 
 
 
-3577
+
+
+
+
+
+8038
 
 PrivateParamMapper.xml
 file
@@ -298,21 +298,17 @@ jiawenhe
 
 3716
 
-SkuOptionMapper.xml
+CustomParamMapper.xml
 file
-7854
-
-
-
-2015-05-25T09:01:12.617055Z
-f68622b8a6a0bbdfb5d43230e9e1586b
-2015-05-25T08:59:43.421875Z
-7854
-liuyi
 
 
 
 
+2015-05-25T02:16:16.077372Z
+891f8c843eb9a441408a025094375cc2
+2015-05-20T03:10:25.953125Z
+7832
+jiawenhe
 
 
 
@@ -330,18 +326,22 @@ liuyi
 
 
 
-8038
+
+
+
+
+3577
 
 SkuAttrMapper.xml
 file
-7854
+7856
 
 
 
-2015-05-25T09:01:12.714061Z
-f4d4e77e11a465c7398da08cf82a10ff
-2015-05-25T08:59:43.421875Z
-7854
+2015-05-26T00:45:41.349621Z
+73ce3f695ea65af56ae65688703113ec
+2015-05-26T00:45:22.250000Z
+7856
 liuyi
 
 
@@ -364,7 +364,7 @@ liuyi
 
 
 
-10525
+10621
 
 PublicParamMapper.xml
 file
@@ -400,40 +400,6 @@ jiawenhe
 
 3777
 
-BinaryInfoMapper.xml
-file
-
-
-
-
-2015-05-25T02:16:16.091373Z
-a429e7b16b619d8c9b544fed0e6d8c67
-2015-05-20T03:10:25.953125Z
-7832
-jiawenhe
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-3931
-
 SkuAttrOptionAliasMapper.xml
 file
 
@@ -467,6 +433,40 @@ jiawenhe
 
 
 6868
+
+BinaryInfoMapper.xml
+file
+
+
+
+
+2015-05-25T02:16:16.091373Z
+a429e7b16b619d8c9b544fed0e6d8c67
+2015-05-20T03:10:25.953125Z
+7832
+jiawenhe
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+3931
 
 SpecificationParamMapper.xml
 file

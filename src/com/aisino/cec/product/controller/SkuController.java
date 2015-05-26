@@ -34,7 +34,9 @@ import com.aisino.cec.enterprise.model.authentication.AuditInfo;
 import com.aisino.cec.product.conditionbean.SkuAttrCondition;
 import com.aisino.cec.product.enumpackage.SkuAttrEnum;
 import com.aisino.cec.product.model.SkuAttr;
+import com.aisino.cec.product.model.SkuOption;
 import com.aisino.cec.product.service.ISkuAttrService;
+import com.aisino.cec.product.service.ISkuOptionService;
 import com.aisino.cec.user.model.User;
 import com.aisino.cec.user.service.IUserService;
 
@@ -61,6 +63,9 @@ public class SkuController extends BaseController{
     @Resource(name="skuAttrService")
     private ISkuAttrService skuAttrService;
     
+    @Resource(name="skuOptionService")
+    private ISkuOptionService skuOptionService;
+    
     @Resource(name="userService")
     private IUserService userService;
     
@@ -69,9 +74,9 @@ public class SkuController extends BaseController{
      * 插入一条sku属性记录
      * @param skuAttr
      */
-    @RequestMapping("/insertSkuAttr")
+    @RequestMapping("/insertSkuAttr/{categoryId}")
     @ResponseBody
-    public void insertSkuAttr(SkuAttr skuAttr, HttpServletRequest request, HttpServletResponse response)
+    public void insertSkuAttr(SkuAttr skuAttr, @PathVariable String categoryId, HttpServletRequest request, HttpServletResponse response)
         throws JsonGenerationException, JsonMappingException, IOException {
        
         boolean resultCheck = false;
@@ -84,6 +89,7 @@ public class SkuController extends BaseController{
         }
        
         try {
+            skuAttr.setCategoryId(categoryId);
             resultCheck = skuAttrService.insertSkuAttr(skuAttr);
             if(resultCheck) {
                 result.put("result", "true");
@@ -113,19 +119,38 @@ public class SkuController extends BaseController{
         resultMapper.writeValue(response.getWriter(), skuAttr);
     }
     
-    @RequestMapping("/classify/{classifyId}")
-    public void getSkuAttrByClassify(@PathVariable String classifyId, HttpServletRequest request, HttpServletResponse response)
+    /**
+     * 根据分类id显示sku属性
+     * @param classifyId
+     * @param request
+     * @param response
+     * @throws JsonGenerationException
+     * @throws JsonMappingException
+     * @throws IOException
+     */
+    @RequestMapping("/category/{categoryId}")
+    @ResponseBody
+    public void getSkuAttrByClassify(@PathVariable String categoryId, HttpServletRequest request, HttpServletResponse response)
         throws JsonGenerationException, JsonMappingException, IOException {
         
-    //    List<SkuAttr> skuAttrList = skuAttrService.
+        SkuAttrCondition condition = new SkuAttrCondition();
+        condition.setCategoryId(categoryId);
+        List<SkuAttr> skuAttrList = skuAttrService.selectByCondition(condition);
+        ObjectMapper resultMapper = new ObjectMapper();
+        
+        resultMapper.writeValue(response.getWriter(), skuAttrList);
     }
     
+    /**
+     * 维护名称重复校验
+     * @param storeName
+     * @return
+     */
     @RequestMapping("/storeNameCheck")
     @ResponseBody
-    public String storeNameCheck(String storeName) {
-        String result = "false";
-        //先模拟一个categoryId
-        String categoryId = "1";
+    public String storeNameCheck(String storeName, String categoryId) {
+        
+        String result = "false";      
         boolean resultCheck = skuAttrService.checkStoreName(storeName,categoryId);
         if(resultCheck) {
             result = "true";
@@ -137,13 +162,57 @@ public class SkuController extends BaseController{
     }
     
     /**
+     * 前端名称重复校验
+     * @param frontName
+     * @return
+     */
+    @RequestMapping("/frontNameCheck")
+    @ResponseBody
+    public String frontNameCheck(String frontName, String categoryId) {
+        
+        String result = "false";       
+        boolean resultCheck = skuAttrService.checkFrontName(frontName, categoryId);
+        if(resultCheck) {
+            result = "true";
+        } else {
+            result = "false";
+        }
+        return result;
+    }
+    
+    /**
      * 更新一条sku属性记录
      * @param skuAttr
      */
     @RequestMapping("/updateSkuAttr")
     @ResponseBody
-    public void updateSkuAttr(SkuAttr skuAttr) {
+    public void updateSkuAttr(SkuAttr skuAttr, HttpServletRequest request, HttpServletResponse response)
+    throws JsonGenerationException, JsonMappingException, IOException  {
+        boolean resultCheck = false;
+        ObjectMapper resultMapper = new ObjectMapper();
+        Map<String, Object> result = new HashMap<String, Object>();
+        String userName = request.getRemoteUser();
+        List<User> userList = userService.getByUserName(userName);
+        if(!userList.isEmpty()) {
+            skuAttr.setModifyUserId(userList.get(0).getUserId());
+        }
+       
+        try {
+            resultCheck = skuAttrService.updateSkuAttr(skuAttr);
+            if(resultCheck) {
+                result.put("result", "true");
+                result.put("skuAttrId", skuAttr.getSkuAttrId());
+         
+            } else {
+                result.put("result", "false");
+            }
+        }catch(Exception e) {
+            result.put("result", "false");
+            e.printStackTrace();
+            
+        }
         
+        resultMapper.writeValue(response.getWriter(), result);
     }
     
     /**
@@ -155,5 +224,67 @@ public class SkuController extends BaseController{
     public List<SkuAttr> selectByCondition(SkuAttrCondition skuAttrCondition) {
         
         return null;
+    }
+    
+    @RequestMapping("/skuOption/{skuAttrId}")
+    @ResponseBody
+    public void selectSkuOptionBySkuAttrId(@PathVariable String skuAttrId, HttpServletRequest request, HttpServletResponse response)
+        throws JsonGenerationException, JsonMappingException, IOException {
+       
+        List<SkuOption> skuOptionList = skuOptionService.findSkuOptionBySkuAttrId(skuAttrId);
+        ObjectMapper resultMapper = new ObjectMapper();
+        resultMapper.writeValue(response.getWriter(), skuOptionList);
+
+    }
+    
+    @RequestMapping("/insertSkuOption/{skuAttrId}")
+    @ResponseBody
+    public void insertSkuOption(SkuOption skuOption, @PathVariable String skuAttrId, HttpServletRequest request, HttpServletResponse response)
+        throws JsonGenerationException, JsonMappingException, IOException {
+        
+        boolean resultCheck = false;
+        ObjectMapper resultMapper = new ObjectMapper();
+        Map<String, Object> result = new HashMap<String, Object>();
+        String userName = request.getRemoteUser();
+        List<User> userList = userService.getByUserName(userName);
+        if(!userList.isEmpty()) {
+            skuOption.setCreateUserId(userList.get(0).getUserId());
+        }
+       
+        try {
+            skuOption.setSkuAttrId(skuAttrId);
+            resultCheck = skuOptionService.insertSkuOption(skuOption);
+            if(resultCheck) {
+                result.put("result", "true");
+                result.put("skuOptionId", skuOption.getSkuOptionId());
+         
+            } else {
+                result.put("result", "false");
+            }
+        }catch(Exception e) {
+            result.put("result", "false");
+            e.printStackTrace();
+            
+        }
+        
+        resultMapper.writeValue(response.getWriter(), result);
+    }
+    
+    /**
+     * 校验sku属性值是否重复
+     * @param value
+     * @return
+     */
+    @RequestMapping("/valueCheck")
+    @ResponseBody
+    public String skuOptionValueCheck(String value, String skuAttrId) {
+        String result = "false";
+        boolean resultCheck = skuOptionService.checkValue(value, skuAttrId);
+        if(resultCheck) {
+            result = "true";
+        } else {
+            result = "false";
+        }
+        return result;
     }
 }

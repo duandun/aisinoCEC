@@ -48,16 +48,10 @@
 			$("#middle-plane input.searchInput").hide();
 			$("#right-plane input.searchInput").hide();
 			
+			//在分类树上查找节点
 			$("#searchBtn").click(function(){
-				var ztree = $.fn.zTree.getZTreeObj("treeDemo");
-				console.log($("#searchBox").val().trim());
-				var treeNode = ztree.getNodeByParam("name", $("#searchBox").val().trim(),null);
-			//	var treeNodeArr = ztree.getNodesByParamFuzzy("name", $("#searchBox").val().trim(),null);
-//				for(var i = 0;i<treeNodeArr.length;i++) {
-//					ztree.selectNode(treeNodeArr[i], true);
-//				}
-				//var treeNode = ztree.getNodeByParam("name")
-				console.log(treeNode);
+				var ztree = $.fn.zTree.getZTreeObj("treeDemo"), 
+					treeNode = ztree.getNodeByParam("name", $("#searchBox").val().trim(),null);
 				ztree.selectNode(treeNode,false);
 			});
 
@@ -143,10 +137,11 @@
       </div>
       <div class="modal-body">
       	<form:form id="addSkuForm" action="" method="post">
+      	<input type="hidden" value="222" name="categoryId"/>
       	<div class="control-group">
       		 <label for="storeName" class="control-label" >维护名称：</label>
       		 <input type="text" name="storeName" id="maintainName" data-val-required="请填写名称" data-val-regex-pattern="(?!^\d[A-Za-z0-9]*$)^[A-Za-z0-9_-]{1,25}$" data-val-regex="用户名只允许字母、数字、下划线、横线组成，首位只能为字母，小于25个字符。" 
-      		 data-val="true" class="form-control" data-val-remote="该维护名称已存在。" data-val-remote-additionalfields="*.storeName" data-val-remote-url="<%=path %>skuManage/storeNameCheck.html"/>
+      		 data-val="true" class="form-control" data-val-remote="该维护名称已存在。" data-val-remote-additionalfields="*.storeName,*.categoryId" data-val-remote-url="<%=path %>skuManage/storeNameCheck.html"/>
       		<span class="help-block">
       			<span data-valmsg-replace="true" data-valmsg-for="storeName" class="field-validation-valid">
 			</span></span>
@@ -154,15 +149,16 @@
       	<br>
       	<div class="control-group">
       		<label for="frontName" class="control-label">前端名称：</label>
-      		<input type="text" name="frontName" id="frontName"  data-val-required="请填写名称" data-val="true" class="form-control" />
+      		<input type="text" name="frontName" id="frontName"  data-val-length-max="64" data-val-length="前端名称小于64位字符" data-val-required="请填写名称" data-val="true" class="form-control" 
+      		data-val="true" data-val-remote="该前端名称已存在" data-val-remote-additionalfields="*.frontName,*.categoryId" data-val-remote-url="<%=path %>skuManage/frontNameCheck.html" data-val-remote-type="post"/>
       		<span class="help-block">
       			<span data-valmsg-replace="true" data-valmsg-for="frontName" class="field-validation-valid">
 			</span></span>
       	</div>
         <br>
-        <div class="control-group picture">
+        <div class="control-group picture"><!--
      	图片：<input type="file"  name="selectBtn" value="选择图片" id="choosePic"/>
-     	</div>
+     	--></div>
       	<br>
       	<div class="col-md-6 control-group">
       		 启用：<input type="radio" name="state" id="enable" value="sku_attr_enable">
@@ -230,6 +226,76 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+
+<!--
+	作者：duandun2012@163.com
+	时间：2015-05-26
+	描述：添加/修改SKU属性值模态框
+-->
+<div class="modal" id="propertyValueModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        	<span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">修改主属性</h4>
+      </div>
+      <div class="modal-body">
+      	<form:form id="addSkuValueForm" action="" method="post">
+      	<input type="hidden" value="222" name="skuAttrId"/>
+      	<div class="control-group">
+      		<label for="value" class="control-label">可选项值：</label>
+      		<input type="text" name="value" id="value"  data-val-length-max="64" data-val-length="可选项值小于64位字符" data-val-required="请填写名称" data-val="true" class="form-control" 
+      		data-val="true" data-val-remote="可选项值已存在" data-val-remote-additionalfields="*.value,*.skuAttrId" data-val-remote-url="<%=path %>skuManage/valueCheck.html" data-val-remote-type="post"/>
+      		<span class="help-block">
+      			<span data-valmsg-replace="true" data-valmsg-for="value" class="field-validation-valid">
+			</span></span>
+      	</div>
+        <br>
+        <div class="control-group picture">
+     	可选图片：<input type="file"  name="imageId" value="选择图片" id="choosePic"/>
+     	</div>
+      	<br>
+      	<div class="col-md-6 control-group">
+      		 启用：<input type="radio" name="state"  value="sku_option_enable">
+			<label >启用</label>
+
+			<input type="radio" name="state" checked value="sku_option_disable">
+			<label>不启用</label>
+		
+		</div>
+		
+		<div class="control-group">
+			类型：<input type="radio" name="typeInfo" id="multiSelect">
+			<label for="multiSelect">多选</label>
+
+			<input type="radio" name="typeInfo" checked id="singleSelect">
+			<label for="singleSelect">单选</label>
+		</div>
+		<br>
+		
+		<div class="control-group">
+			 <label for="descInfo" class="control-label">描述：</label>
+			 <input type="text" name="descInfo" class="form-control"/>
+        	
+		</div>
+		<br>
+		<div class="control-group">
+			<label for="modifyInfo" class="control-label">修改信息：</label>
+			<input type="text" name="modifyInfo"  class="form-control"/>
+		</div>
+		
+      </form:form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary commit">修改</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 <script>
 				$(document).ready(function(){
 				  $('input').iCheck({

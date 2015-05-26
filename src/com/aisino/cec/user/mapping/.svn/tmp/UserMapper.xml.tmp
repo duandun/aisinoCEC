@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aisino.cec.account.dao.UserMapper" >
+	<resultMap id="BaseResultMap" type="Account">
+		<id column="account_id" property="accountId" jdbcType="VARCHAR" />
+		<result column="account_name" property="accountName" jdbcType="VARCHAR" />
+		<result column="account_password" property="accountPasswd" jdbcType="VARCHAR" />
+		<result column="email_addr" property="emailAddr" jdbcType="VARCHAR" />
+		<result column="phone_num" property="phoneNum" jdbcType="VARCHAR" />
+		<result column="verify_code" property="verifyCode" jdbcType="VARCHAR" />
+		<result column="company_name" property="companyName" jdbcType="VARCHAR" />
+		<result column="register_time" property="registerTime" jdbcType="TIMESTAMP" />
+		<result column="account_status" property="accountStatus" jdbcType="VARCHAR" />
+		<result column="bank_status" property="bankStatus" jdbcType="VARCHAR" />
+		<result column="verify_code_valid_time" property="verifyCodeValidTime" jdbcType="TIMESTAMP" />
+		<result column="account_flag" property="accountFlag" jdbcType="VARCHAR" />
+		<result column="register_source" property="registerSource" jdbcType="VARCHAR" />
+		<result column="login_num" property="loginNum" jdbcType="INTEGER" />
+		<result column="login_fail_time_first" property="loginFailTimeFirst" jdbcType="TIMESTAMP" />
+		<result column="login_fail_time_last" property="loginFailTimeLast" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		account_id, account_name, account_password, email_addr, phone_num, verify_code, company_name,register_time,
+		account_status, bank_status, verify_code_valid_time, account_flag, register_source
+ 	 </sql>
+	<insert id="insert" parameterType="com.aisino.cec.account.model.Account" >
+	    insert into table_account(account_id, 
+	    account_name, 
+	    account_password,
+	    email_addr,
+	    verify_code,
+	    company_name,
+	    register_time,
+	    account_status,
+	    verify_code_valid_time,
+	    account_flag,
+	    register_source
+	      )
+	    values (#{accountId, jdbcType=VARCHAR}, 
+	    #{accountName, jdbcType=VARCHAR}, 
+	    #{accountPasswd, jdbcType=VARCHAR}, 
+	    #{emailAddr, jdbcType=VARCHAR}, 
+	    #{verifyCode, jdbcType=VARCHAR}, 
+	    #{companyName, jdbcType=VARCHAR},
+	    #{registerTime, jdbcType=TIMESTAMP}, 
+	    #{accountStatus, jdbcType=VARCHAR},
+	    #{verifyCodeValidTime, jdbcType=TIMESTAMP}, 
+	    #{accountFlag, jdbcType=VARCHAR},
+	    #{registerSource, jdbcType=VARCHAR}
+	      )
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.aisino.cec.account.model.Account">
+  	
+  </update>
+  
+  <update id="updateAccountStatus" parameterType="Account">
+  	update table_account 
+  	<set>
+  		<if test="accountStatus != null">
+  			account_status = #{accountStatus, jdbcType=VARCHAR}
+  		</if>
+  	</set>
+  	where account_id = #{accountId, jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateBankStatus" parameterType="Account">
+  	update table_account set
+  	bank_status = #{bankStatus}
+  	where account_id = #{accountId}
+  </update>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+  	delete from table_account
+  	where account_id = #{accountId}
+  </delete>
+   
+   <select id="getAll" resultMap="BaseResultMap">
+   select 
+   <include refid="Base_Column_List" />
+   from table_account	
+   </select>
+   
+   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+   	select * from table_account
+   	where account_id = #{accountId}
+   </select>
+   
+   <select id="selectByAccountName" parameterType="java.lang.String" resultMap="BaseResultMap">
+   	select 
+   	<include refid="Base_Column_List" />
+   	from table_account
+   	where account_name = #{accountName}
+   </select>
+   
+   <select id="selectByEmail" parameterType="java.lang.String" resultMap="BaseResultMap">
+   	select 
+	<include refid="Base_Column_List" />
+	from table_account
+   	where email_addr = #{emailAddr}
+   </select>
+   
+    <select id="selectByPhoneNum" parameterType="java.lang.String" resultMap="BaseResultMap">
+   	select
+   	<include refid="Base_Column_List" />
+   	from table_account
+   	where phone_num = #{phoneNum}
+   </select>
+   
+    <select id="selectByCompanyName" parameterType="java.lang.String" resultType="java.lang.String">
+   	select account_name from table_account
+   	where company_name = #{companyName}
+   </select>
+   <!-- ========================================== --> 
+   <resultMap id="FindPwdBaseResultMap" type="com.aisino.cec.user.model.User" >
+    <id column="user_id" property="accountId" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="user_email" property="userEmail" jdbcType="VARCHAR" />
+    <result column="verify_code" property="verifyCode" jdbcType="VARCHAR" />
+    <result column="verify_code_valid_time" property="verifyCodeValidTime" jdbcType="DATE" />
+  </resultMap>
+  
+  <!-- 根据邮箱或者登录账号，查询相关信息，找回密码时用到 -->
+  <sql id="checkNameAndEmail_Column_List" >
+    user_id, user_name, user_email
+  </sql>
+  
+  <!-- 找回密码时，或者激活账户时，激活链接的有效性需要进行检查 -->
+  <sql id="checkVerifyCode_Column_List" >
+    user_id, verify_code, verify_code_valid_time
+  </sql>
+  
+  <!-- 
+  <select id="selectByAccountName" resultMap="FindPwdBaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="checkNameAndEmail_Column_List" />
+    from table_account
+    where account_name = #{accountName}
+  </select>
+   -->
+   
+  <select id="selectByUserEmail" resultMap="FindPwdBaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="checkNameAndEmail_Column_List" />
+    from user
+    where user_email = #{userEmail,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectByUserId" resultMap="FindPwdBaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="checkVerifyCode_Column_List" />
+    from user
+    where user_id = #{userId}
+  </select>
+  
+  <update id="updateVarifyCode" parameterType="com.aisino.cec.user.model.User" >
+    update user
+    set verify_code = #{verifyCode,jdbcType=VARCHAR},
+      verify_code_valid_time = #{verifyCodeValidTime}
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updatePassword" parameterType="com.aisino.cec.user.model.User" >
+    update user
+    set user_password = #{userPassword,jdbcType=VARCHAR},
+    verify_code = #{verifyCode,jdbcType=VARCHAR},
+    verify_code_valid_time = #{verifyCodeValidTime,jdbcType=DATE}
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </update>
+</mapper>

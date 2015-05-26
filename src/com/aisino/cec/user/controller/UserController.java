@@ -1,0 +1,402 @@
+package com.aisino.cec.user.controller;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.aisino.cec.common.enumpackage.captcha.LoginEnum;
+import com.aisino.cec.common.enumpackage.sendEmail.SendMailEnum;
+import com.aisino.cec.common.util.calendar.CalendarUtil;
+import com.aisino.cec.common.util.sendEmail.EmailSettings;
+import com.aisino.cec.common.util.sendEmail.SendEmail;
+import com.aisino.cec.user.model.User;
+import com.aisino.cec.user.service.IUserService;
+
+/**
+ * 用户相关的controller
+ * 
+ * @author lxy
+ */
+@Controller
+@RequestMapping(value = "user")
+public class UserController {
+
+    @Autowired
+    private IUserService userService;
+    
+    //快速注册用户
+    @RequestMapping("/registUser")
+    public ModelAndView registUser(HttpServletResponse response,User user) throws JsonGenerationException, JsonMappingException, IOException{
+        //register
+        String result;
+        ModelAndView mav = new ModelAndView();       
+        try {          
+            userService.insert(user);
+            result = "registerSuccess";     
+            mav.addObject("email", user.getUserEmail());
+            mav.setViewName("user/registerSuccess");
+        }catch(Exception e) {
+            result = "fail";
+            mav.setViewName("registerFail");
+            e.printStackTrace();
+        }
+        return mav;
+    }
+    
+    //用户名重复性检查
+    @RequestMapping("/userNameCheck")
+    @ResponseBody
+    public String userNameCheck(String userName) {
+        String result = null;
+        Map<String, Object> data = new HashMap<String, Object>();
+        try {
+            boolean checkResult = userService.userNameCheck(userName);
+            // data.put("accountNameCheckResult", checkResult);
+            if (checkResult) {
+                result = "true";
+            } else {
+                result = "false";
+            }
+        } catch (Exception e) {
+            data.put("accountNameCheckResult", "false");// 重复
+            e.printStackTrace();
+        }
+        return result;
+    }
+    
+    //用户邮箱重复性检查
+    @RequestMapping("/userEmailCheck")
+    @ResponseBody
+    public String userEmailCheck(String userEmail) {
+        String result = null;
+        Map<String, Object> data = new HashMap<String, Object>();
+        try {
+            boolean checkResult = userService.userEmailCheck(userEmail);
+            // data.put("emailUniqueCheckResult", checkResult);
+            if (checkResult) {
+                result = "true";
+            } else {
+                result = "false";
+            }
+        } catch (Exception e) {
+            data.put("emailCheckResult", "false");// 重复
+            e.printStackTrace();
+        }
+        return result;
+    }
+    
+    //用户手机重复性检查
+    @RequestMapping("/userPhoneCheck") 
+    @ResponseBody
+    public String userPhoneCheck(String userPhone) {
+        String result = null;
+        Map<String, Object> data = new HashMap<String, Object>();
+        try {
+            boolean checkResult = userService.userPhoneCheck(userPhone);
+            if(checkResult) {
+                result = "true";
+            } else {
+                result = "false";
+            }
+        }catch(Exception e) {
+            data.put("phoneNumChecResult", "false"); //重复
+            e.printStackTrace();
+        }
+        return result;
+    }
+    
+    //企业名称重复性检查
+    @RequestMapping("/enterpriseNameCheck") 
+    @ResponseBody
+    public String enterpriseNameCheck(String enterpriseName) {
+        String result = null;
+
+        Map<String, Object> data = new HashMap<String, Object>();
+        
+        try {
+            boolean checkResult = userService.enterpriseNameCheck(enterpriseName);
+            if(checkResult) {
+                result = "true";
+            } else {
+                result = "false";
+            }
+        }catch(Exception e) {
+            data.put("enterpriseNameChecResult", "false"); //重复
+            e.printStackTrace();
+        }
+        return result;
+    }
+    
+    //重新发送激活邮件
+    @RequestMapping("/sendEmailAgain")
+    @ResponseBody
+    public String sendEmailAgain(String email) {
+        List<User> accountList = userService.getByUserEmail(email);
+        if(!accountList.isEmpty()){
+            User user = accountList.get(0);
+            EmailSettings emailSettings = new EmailSettings();
+            emailSettings.setMailSubject("激活用户邮箱");
+            emailSettings.setMailContent(SendEmail.createEmailContent(SendMailEnum.MAIL_TYPE_REGISTER.getValue(), user.getUserId(), user.getVerifyCode()));
+            List<String> addrList = new ArrayList<String>();
+            addrList.add(email);
+            emailSettings.setAddressList(addrList);
+            //修改用户激活时间
+            Date nowDate = new Date();
+            user.setVerifyCodeValidTime(CalendarUtil.dateAdd(nowDate, 2));
+            userService.updateVerifyCodeValidTime(user);
+            SendEmail.sendEmail(emailSettings);
+        }
+        return "true";
+    }
+    
+    //激活邮箱
+    @RequestMapping("/activateUser")
+    public ModelAndView activateUser(HttpServletRequest request) {
+        ModelAndView newView = new ModelAndView();
+        String userId = request.getParameter(SendMailEnum.SENDER_MAIL_HLINK_PINCODE.getValue()); //用户id
+        String verifyCode = request.getParameter(SendMailEnum.SENDER_MAIL_HLINK_CDKEY.getValue());// 激活码
+        try {
+            String activateInfo = userService.activateUser(userId, verifyCode);// 调用激活方法
+            newView.addObject("activateInfo", activateInfo);
+            String email = userService.getByUserId(userId).getUserEmail();
+            newView.addObject("email", email);
+            newView.addObject("mailActivated", SendMailEnum.MAIL_ACTIVATED.getValue());
+            newView.addObject("verifyCodeWrong", SendMailEnum.MAIL_VERIFYCODE_WRONG.getValue());
+            newView.addObject("verifyCodeExpire", SendMailEnum.MAIL_VERIFYCODE_EXPIRE.getValue());
+            newView.setViewName("user/activatePage");
+        } catch (Exception e) {
+            newView.setViewName("user/activatePage");
+        }
+        return newView;
+    }
+    
+    
+    //验证码校验
+    @RequestMapping("/captchaCheck")
+    @ResponseBody
+    public String captchaCheck(HttpServletRequest request, HttpServletResponse response, String captchaCode) throws ServletException, IOException {
+        String result = null;
+        Map<String, Object> data = new HashMap<String, Object>();
+        try {
+            HttpSession session = request.getSession();
+            // request内存放的验证码
+            String reqSessionCode = (String) session.getAttribute(LoginEnum.LOGIN_CAPTCHA.getValue());
+            if (reqSessionCode.equalsIgnoreCase(captchaCode)) {
+                // data.put("captchaCheckResult", Boolean.TRUE);
+                result = "true";
+            } else {
+                // data.put("captchaCheckResult", Boolean.FALSE);
+                result = "false";
+            }
+        } catch (Exception e) {
+            data.put("captchaCheckResult", Boolean.FALSE);// 重复
+            e.printStackTrace();
+        }
+        // return data.toString();
+        return result;
+    }
+
+    // ==========================================
+    /**
+     * 跳转到找回密码页面的响应方法
+     */
+    @RequestMapping("/toFindPwdPage.html")
+    public String toFindPwdPage() {
+        return "user/findPassword";
+    }
+
+    /**
+     * 验证码校验
+     * 
+     * @param captchaCode
+     * @return
+     * @throws IOException
+     * @throws JsonMappingException
+     * @throws JsonGenerationException
+     */
+//    @RequestMapping("/captchaCheck.html")
+//    @ResponseBody
+//    public void captchaCheck(HttpServletRequest request, HttpServletResponse response, String captchaCode)
+//            throws JsonGenerationException, JsonMappingException, IOException {
+//        String result = null;
+//        ObjectMapper mapper = new ObjectMapper();
+//        try {
+//            // sessiong中存放的验证码
+//            String reqSessionCode = (String) request.getSession().getAttribute(LoginEnum.LOGIN_CAPTCHA.getValue());
+//            if (reqSessionCode.equalsIgnoreCase(captchaCode)) {
+//                //相等返回true，校验通过
+//                result = "true";
+//            }
+//            else {
+//                //不相等返回false，校验没通过
+//                result = "false";
+//            }
+//        }
+//        catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        mapper.writeValue(response.getWriter(), result);
+//    }
+
+    /**
+     * 检查邮箱或者用户名是否存在
+     * @param request
+     * @param response
+     * @param emailOrUserName
+     * @throws JsonGenerationException
+     * @throws JsonMappingException
+     * @throws IOException
+     */
+    @RequestMapping("/checkEmailOrUserNameIsExists.html")
+    @ResponseBody
+    public void checkEmailOrUserNameIsExists(HttpServletRequest request, HttpServletResponse response,
+            String emailOrUserName) throws JsonGenerationException, JsonMappingException, IOException {
+        boolean result = false;
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            // 填写的邮箱或者用户名在不等于空，且不都是空格的情况下，才进行是否存在的验证
+            if (emailOrUserName != null && !emailOrUserName.trim().equals("")) {
+                if (emailOrUserName.trim().contains("@")) {
+                    // 如果是邮箱，检查邮箱是否存在
+                    result = userService.userEmailIsExist(emailOrUserName);
+                }
+                else {
+                    // 如果是用户名，检查用户名是否存在
+                    result = userService.userNameIsExist(emailOrUserName);
+                }
+            }
+            else {
+                result = false;
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        mapper.writeValue(response.getWriter(), result);
+    }
+
+    /**
+     * 填写完成邮箱和验证码之后，点击找回密码按钮的响应事件
+     * @param request 找回密码请求
+     * @param emailOrUserName 邮箱或者用户名
+     * @return
+     */
+    @RequestMapping("/findPassword.html")
+    public ModelAndView findPassword(HttpServletRequest request, String emailOrUserName) {
+        ModelAndView sendMailResultView = new ModelAndView();
+        String email = userService.findPassword(emailOrUserName.trim());
+        sendMailResultView.addObject("email", email);
+        sendMailResultView.setViewName("user/findPasswordMail");
+        return sendMailResultView;
+    }
+
+    /**
+     * 点击再次发送邮件的响应处理方法
+     * @param response
+     * @param email
+     * @throws JsonGenerationException
+     * @throws JsonMappingException
+     * @throws IOException
+     */
+    @RequestMapping("/sendFindPwdMailAgain.html")
+    @ResponseBody
+    public void sendFindPwdMailAgain(HttpServletResponse response, String email) throws JsonGenerationException,
+            JsonMappingException, IOException {
+        String result = null;
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> map = new HashMap<String, Object>();
+        try {
+            userService.findPassword(email.trim());
+            result = "true";
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            result = "false";
+        }
+        map.put("result", result);
+        mapper.writeValue(response.getWriter(), map);
+    }
+
+    /**
+     * 用户点击邮箱中的找回密码链接的响应方法，对链接的有效性进行验证，有效的话，进入到重置密码页面，否则的话，进入到错误提示页面
+     * @param request
+     * @return
+     */
+    @RequestMapping("/retakePwd.html")
+    public ModelAndView retakePwd(HttpServletRequest request) {
+        ModelAndView sendMailResultView = new ModelAndView();
+        String userId = request.getParameter(SendMailEnum.SENDER_MAIL_HLINK_PINCODE.getValue());
+        String varifyCode = request.getParameter(SendMailEnum.SENDER_MAIL_HLINK_CDKEY.getValue());
+
+        if (userId != null && varifyCode != null) {
+            boolean result = userService.linkIsTimeOut(userId.trim(), varifyCode.trim());
+            if (result) {
+                sendMailResultView.setViewName("user/retakePwd");
+                sendMailResultView.addObject("userId", userId);
+            }
+            else {
+                sendMailResultView.setViewName("user/error");
+            }
+        }
+        else {
+            sendMailResultView.setViewName("user/error");
+        }
+
+        return sendMailResultView;
+    }
+
+    /**
+     * 重置密码的响应方法，最后给出重置密码是否成功
+     * @param request
+     * @param userId
+     * @param password
+     * @return
+     */
+    @RequestMapping("/resetPwd.html")
+    public ModelAndView resetPwd(HttpServletRequest request, String userId, String password) {
+        ModelAndView resetPwdResultView = new ModelAndView();
+        try {
+            userService.resetPassword(userId, password);
+            resetPwdResultView.setViewName("user/result");
+            resetPwdResultView.addObject("result", "true");
+        }
+        catch (Exception e) {
+            resetPwdResultView.setViewName("user/result");
+            resetPwdResultView.addObject("result", "false");
+            e.printStackTrace();
+        }
+
+        return resetPwdResultView;
+    }
+    
+    /**
+     * 跳转到注册页面
+     * @param request
+     * @param userId
+     * @param password
+     * @return
+     */
+    @RequestMapping("/register")
+    public String register() {
+        
+        return "user/register";
+    }
+}

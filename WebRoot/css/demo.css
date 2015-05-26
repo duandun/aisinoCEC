@@ -24,7 +24,7 @@ div.zTreeDemoBackground {width:300px;height:500px;text-align:left;}
 div.property {height:500px;text-align:left;overflow: auto;}
 div.property-value {height:500px;text-align: center;overflow-y: auto;overflow-x:auto;}
 
-div.delete {background-color: #CE8483;}
+div.delete {background-color: #CE8483; border-radius: 4px 4px 4px 4px;}
 
 .clear {clear:both;}
 

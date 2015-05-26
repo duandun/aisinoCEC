@@ -69,10 +69,11 @@ public class ClassifyTree {
         Map<String, Object> data = new HashMap<String, Object>();
         List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
         String parentId = request.getParameter("id");
-        for(int i =5;i<10;i++) {
+        for(int i = 0;i<10;i++) {
             data.put("id", i);
             data.put("pId", parentId);
             data.put("name", "子节点--"+parentId+"--" +i);
+            data.put("categoryId", i+10);
             dataList.add(data);
         }
         mapper.writeValue(response.getWriter(), dataList);

@@ -228,6 +228,9 @@
 		<include refid="Base_Column_List" />
 		from p_sku_attr where 1=1
 		<trim>
+			<if test="categoryId != null">
+				and category_id = #{categoryId,jdbcType=CHAR}
+			</if>
 			<if test="storeName != null">
 				and store_name like CONCAT('%', #{storeName, jdbcType=VARCHAR}, '%')
 			</if>

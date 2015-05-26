@@ -66,20 +66,47 @@
 			$("#add-sku").hide();
 			$("#add-skuValue").hide();
 			$("#choosePic").hide();
+			$("#right-plane input.searchInput").hide();
+			$("#searchSkuValue").hide();
+			$("#right-plane div.mainProperty").hide();
 						
 			if(treeNode.isParent) {
 				return false;
 			}
 			
 			var $group;
-			for(var i = 0;i<20;i++) {
-				var setting = {
-						inputBoxValue: i,
-						category: classifyTree.category
-				};
-				$group = PropertyGroup.init(setting);
-				$("#middle-plane ul.list").append($group);
-			}
+			
+			//展现sku属性列表
+			$.ajax({
+				url: basePath + "skuManage/category/"+treeNode.categoryId+".html?" + new Date().getTime(),
+				dataType: "json",
+				async: false,
+				type: "get",
+				data: {
+					
+				},
+				success: function(data) {
+					$.each(data, function(i,item){
+						var setting = {
+								inputBoxValue: item.frontName,
+								category: classifyTree.category,
+								categoryId: item.categoryId,
+								propertyId: item.skuAttrId
+						};
+						if(item.state == "sku_attr_enable") {
+							setting.status = "enable";
+						} else {
+							setting.status = "disable";
+						}
+						$group = PropertyGroup.init(setting);
+						$("#middle-plane ul.list").append($group);
+					});
+					
+				},
+				error: function(data) {
+					alert("出错了！");
+				}
+			});
 			
 			//查询sku属性
 			$("#middle-plane input.searchInput").val("");

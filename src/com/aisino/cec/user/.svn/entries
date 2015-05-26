@@ -1,0 +1,49 @@
+10
+
+dir
+7808
+svn://192.168.3.98/zxaebp/aisinoCEC/src/com/aisino/cec/user
+svn://192.168.3.98/zxaebp
+
+
+
+2015-05-14T02:15:09.187500Z
+7806
+changrui
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ac2ca032-cfb0-a24d-91c5-4d664307dad1
+
+enumpackage
+dir
+
+model
+dir
+
+service
+dir
+
+controller
+dir
+
+dao
+dir
+
+vo
+dir
+
+mapping
+dir
+
