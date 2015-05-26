@@ -188,6 +188,7 @@ public class SkuController extends BaseController{
     @ResponseBody
     public void updateSkuAttr(SkuAttr skuAttr, HttpServletRequest request, HttpServletResponse response)
     throws JsonGenerationException, JsonMappingException, IOException  {
+       
         boolean resultCheck = false;
         ObjectMapper resultMapper = new ObjectMapper();
         Map<String, Object> result = new HashMap<String, Object>();
@@ -210,8 +211,7 @@ public class SkuController extends BaseController{
             result.put("result", "false");
             e.printStackTrace();
             
-        }
-        
+        }        
         resultMapper.writeValue(response.getWriter(), result);
     }
     
@@ -286,5 +286,47 @@ public class SkuController extends BaseController{
             result = "false";
         }
         return result;
+    }
+
+    @RequestMapping("/skuOption/{skuOptionId}")
+    @ResponseBody
+    public void getSkuOptionById(@PathVariable String skuOptionId, HttpServletRequest request, HttpServletResponse response)
+        throws JsonGenerationException, JsonMappingException, IOException {
+
+        SkuOption skuOption = skuOptionService.findSkuOptionById(skuOptionId);
+        ObjectMapper resultMapper = new ObjectMapper();
+        
+        resultMapper.writeValue(response.getWriter(), skuOption);
+    }
+
+    @RequestMapping("/updateSkuOption")
+    @ResponseBody
+    public void updateSkuOption(SkuOption skuOption, HttpServletRequest request, HttpServletResponse response)
+        throws JsonGenerationException, JsonMappingException, IOException {
+
+        boolean resultCheck = false;
+        ObjectMapper resultMapper = new ObjectMapper();
+        Map<String, Object> result = new HashMap<String, Object>();
+        String userName = request.getRemoteUser();
+        List<User> userList = userService.getByUserName(userName);
+        if(!userList.isEmpty()) {
+            skuOption.setModifyUserId(userList.get(0).getUserId());
+        }
+       
+        try {
+            resultCheck = skuOptionService.updateSkuAttr(skuOption);
+            if(resultCheck) {
+                result.put("result", "true");
+                result.put("skuOptionId", skuOption.getSkuOptionId());
+         
+            } else {
+                result.put("result", "false");
+            }
+        }catch(Exception e) {
+            result.put("result", "false");
+            e.printStackTrace();
+        }
+        
+        resultMapper.writeValue(response.getWriter(), result);
     }
 }
