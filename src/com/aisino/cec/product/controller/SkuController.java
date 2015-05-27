@@ -148,16 +148,21 @@ public class SkuController extends BaseController{
      */
     @RequestMapping("/storeNameCheck")
     @ResponseBody
-    public String storeNameCheck(String storeName, String categoryId) {
+    public String storeNameCheck(String storeName, String categoryId, String skuAttrId) {
         
-        String result = "false";      
-        boolean resultCheck = skuAttrService.checkStoreName(storeName,categoryId);
-        if(resultCheck) {
+        String result = "false";
+        String id = skuAttrService.checkStoreName(storeName,categoryId);
+        
+        if(id==null) {
             result = "true";
         }
-        else {
+        else if(id!=null&&id.equals(skuAttrId)) {
+            result = "true";
+        }
+        else if(id!=null&&!id.equals(skuAttrId)) {
             result = "false";
         }
+        
         return result;
     }
     
@@ -168,13 +173,17 @@ public class SkuController extends BaseController{
      */
     @RequestMapping("/frontNameCheck")
     @ResponseBody
-    public String frontNameCheck(String frontName, String categoryId) {
+    public String frontNameCheck(String frontName, String categoryId, String skuAttrId) {
         
         String result = "false";       
-        boolean resultCheck = skuAttrService.checkFrontName(frontName, categoryId);
-        if(resultCheck) {
+        String id = skuAttrService.checkFrontName(frontName, categoryId);
+        if(id==null) {
             result = "true";
-        } else {
+        }
+        else if(id!=null&&id.equals(skuAttrId)) {
+            result = "true";
+        }
+        else if(id!=null&&!id.equals(skuAttrId)) {
             result = "false";
         }
         return result;
@@ -184,9 +193,9 @@ public class SkuController extends BaseController{
      * 更新一条sku属性记录
      * @param skuAttr
      */
-    @RequestMapping("/updateSkuAttr")
+    @RequestMapping("/updateSkuAttr/{skuAttrId}")
     @ResponseBody
-    public void updateSkuAttr(SkuAttr skuAttr, HttpServletRequest request, HttpServletResponse response)
+    public void updateSkuAttr(SkuAttr skuAttr, @PathVariable String skuAttrId, HttpServletRequest request, HttpServletResponse response)
     throws JsonGenerationException, JsonMappingException, IOException  {
        
         boolean resultCheck = false;
@@ -199,6 +208,7 @@ public class SkuController extends BaseController{
         }
        
         try {
+            skuAttr.setSkuAttrId(skuAttrId);
             resultCheck = skuAttrService.updateSkuAttr(skuAttr);
             if(resultCheck) {
                 result.put("result", "true");
@@ -277,18 +287,23 @@ public class SkuController extends BaseController{
      */
     @RequestMapping("/valueCheck")
     @ResponseBody
-    public String skuOptionValueCheck(String value, String skuAttrId) {
+    public String skuOptionValueCheck(String value, String skuAttrId, String skuOptionId) {
         String result = "false";
-        boolean resultCheck = skuOptionService.checkValue(value, skuAttrId);
-        if(resultCheck) {
+        String id = skuOptionService.checkValue(value, skuAttrId);
+        
+        if(id==null) {
             result = "true";
-        } else {
+        }
+        else if(id!=null&&id.equals(skuOptionId)) {
+            result = "true";
+        }
+        else if(id!=null&&!id.equals(skuOptionId)) {
             result = "false";
         }
         return result;
     }
 
-    @RequestMapping("/skuOption/{skuOptionId}")
+    @RequestMapping("/showSkuOption/{skuOptionId}")
     @ResponseBody
     public void getSkuOptionById(@PathVariable String skuOptionId, HttpServletRequest request, HttpServletResponse response)
         throws JsonGenerationException, JsonMappingException, IOException {
@@ -299,9 +314,18 @@ public class SkuController extends BaseController{
         resultMapper.writeValue(response.getWriter(), skuOption);
     }
 
-    @RequestMapping("/updateSkuOption")
+    /**
+     * 更新sku属性值信息
+     * @param skuOption
+     * @param request
+     * @param response
+     * @throws JsonGenerationException
+     * @throws JsonMappingException
+     * @throws IOException
+     */
+    @RequestMapping("/updateSkuOption/{skuOptionId}")
     @ResponseBody
-    public void updateSkuOption(SkuOption skuOption, HttpServletRequest request, HttpServletResponse response)
+    public void updateSkuOption(SkuOption skuOption, @PathVariable String skuOptionId, HttpServletRequest request, HttpServletResponse response)
         throws JsonGenerationException, JsonMappingException, IOException {
 
         boolean resultCheck = false;
@@ -314,7 +338,8 @@ public class SkuController extends BaseController{
         }
        
         try {
-            resultCheck = skuOptionService.updateSkuAttr(skuOption);
+            skuOption.setSkuOptionId(skuOptionId);
+            resultCheck = skuOptionService.updateSkuOption(skuOption);
             if(resultCheck) {
                 result.put("result", "true");
                 result.put("skuOptionId", skuOption.getSkuOptionId());

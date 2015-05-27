@@ -95,21 +95,21 @@ public class SkuAttrService implements ISkuAttrService {
     }
 
     @Override
-    public boolean checkFrontName(String frontName, String categoryId) {
-        boolean checkResult = true;
+    public String checkFrontName(String frontName, String categoryId) {
+        String checkResult = null;
         List<SkuAttr> skuAttrList = skuAttrMapper.checkFrontName(frontName, categoryId);
         if (null != skuAttrList && !skuAttrList.isEmpty()) {
-            checkResult = false;
+            checkResult = skuAttrList.get(0).getSkuAttrId();
         }
         return checkResult;
     }
 
     @Override
-    public boolean checkStoreName(String storeName, String categoryId) {
-        boolean checkResult = true;
+    public String checkStoreName(String storeName, String categoryId) {
+        String checkResult = null;
         List<SkuAttr> skuAttrList = skuAttrMapper.checkStoreName(storeName, categoryId);
         if (null != skuAttrList && !skuAttrList.isEmpty()) {
-            checkResult = false;
+            checkResult = skuAttrList.get(0).getSkuAttrId();
         }
         return checkResult;
     }

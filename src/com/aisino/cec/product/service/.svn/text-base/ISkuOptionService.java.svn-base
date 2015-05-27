@@ -58,5 +58,5 @@ public interface ISkuOptionService {
      * @param skuAttrId
      * @return
      */
-    boolean checkValue(String value, String skuAttrId);
+    String checkValue(String value, String skuAttrId);
 }

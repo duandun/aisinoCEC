@@ -138,10 +138,11 @@
       <div class="modal-body">
       	<form:form id="addSkuForm" action="" method="post">
       	<input type="hidden" value="222" name="categoryId"/>
+      	<input type="hidden" value="" name="skuAttrId">
       	<div class="control-group">
       		 <label for="storeName" class="control-label" >维护名称：</label>
       		 <input type="text" name="storeName" id="maintainName" data-val-required="请填写名称" data-val-regex-pattern="(?!^\d[A-Za-z0-9]*$)^[A-Za-z0-9_-]{1,25}$" data-val-regex="用户名只允许字母、数字、下划线、横线组成，首位只能为字母，小于25个字符。" 
-      		 data-val="true" class="form-control" data-val-remote="该维护名称已存在。" data-val-remote-additionalfields="*.storeName,*.categoryId" data-val-remote-url="<%=path %>skuManage/storeNameCheck.html"/>
+      		 data-val="true" class="form-control" data-val-remote="该维护名称已存在。" data-val-remote-additionalfields="*.storeName,*.categoryId,*.skuAttrId" data-val-remote-url="<%=path %>skuManage/storeNameCheck.html"/>
       		<span class="help-block">
       			<span data-valmsg-replace="true" data-valmsg-for="storeName" class="field-validation-valid">
 			</span></span>
@@ -150,7 +151,7 @@
       	<div class="control-group">
       		<label for="frontName" class="control-label">前端名称：</label>
       		<input type="text" name="frontName" id="frontName"  data-val-length-max="64" data-val-length="前端名称小于64位字符" data-val-required="请填写名称" data-val="true" class="form-control" 
-      		data-val="true" data-val-remote="该前端名称已存在" data-val-remote-additionalfields="*.frontName,*.categoryId" data-val-remote-url="<%=path %>skuManage/frontNameCheck.html" data-val-remote-type="post"/>
+      		data-val="true" data-val-remote="该前端名称已存在" data-val-remote-additionalfields="*.frontName,*.categoryId,*.skuAttrId" data-val-remote-url="<%=path %>skuManage/frontNameCheck.html" data-val-remote-type="post"/>
       		<span class="help-block">
       			<span data-valmsg-replace="true" data-valmsg-for="frontName" class="field-validation-valid">
 			</span></span>
@@ -244,18 +245,54 @@
       <div class="modal-body">
       	<form:form id="addSkuValueForm" action="" method="post">
       	<input type="hidden" value="222" name="skuAttrId"/>
+      	<input type="hidden" value="" name="skuOptionId" />
       	<div class="control-group">
       		<label for="value" class="control-label">可选项值：</label>
-      		<input type="text" name="value" id="value"  data-val-length-max="64" data-val-length="可选项值小于64位字符" data-val-required="请填写名称" data-val="true" class="form-control" 
-      		data-val="true" data-val-remote="可选项值已存在" data-val-remote-additionalfields="*.value,*.skuAttrId" data-val-remote-url="<%=path %>skuManage/valueCheck.html" data-val-remote-type="post"/>
+      		<input type="text" name="value" id="value"  data-val-length-max="64" data-val-length="可选项值小于64位字符" data-val-required="请填写名称"  data-val="true" class="form-control" 
+      		data-val="true" data-val-remote="可选项值已存在" data-val-remote-additionalfields="*.value,*.skuAttrId,*.skuOptionId" data-val-remote-url="<%=path %>skuManage/valueCheck.html" data-val-remote-type="post"/>
       		<span class="help-block">
       			<span data-valmsg-replace="true" data-valmsg-for="value" class="field-validation-valid">
 			</span></span>
       	</div>
         <br>
         <div class="control-group picture">
-     	可选图片：<input type="file"  name="imageId" value="选择图片" id="choosePic"/>
+     	可选图片：<input type="button"  name="imageId" value="选择图片" id="choosePic"/>
      	</div>
+      	<br>
+      	<div class="control-group  picPanel">
+      		
+      		
+      		<div class="panel panel-primary">
+				
+				 <div class="panel-body">
+				    <div class="imageSelect">
+      		<input type="file" name="imageUrl" value="图片"/>
+      		<br>
+      		<label class="control-label">存储名称：</label>
+      		<input type="text" name="storeName" data-val-regex-pattern="(?!^\d[A-Za-z0-9]*$)^[A-Za-z0-9_-]{1,25}$" data-val-regex="用户名只允许字母、数字、下划线、横线组成，首位只能为字母，小于25个字符。"
+      		 data-val-required="请填写名称" data-val="true" class="form-control" 
+      		 data-val="true" data-val-remote="可选项值已存在" data-val-remote-additionalfields="*.storeName" data-val-remote-url="<%=path %>skuManage/valueCheck.html" data-val-remote-type="post"/>
+      		<span class="help-block">
+      			<span data-valmsg-replace="true" data-valmsg-for="storeName" class="field-validation-valid">
+			</span></span>
+      		
+      		<label class="control-label">图片名称：</label>
+      		<input type="text" name="frontName"   data-val-length-max="64" data-val-length="可选项值小于64位字符" data-val-required="请填写名称" data-val="true" class="form-control" 
+      		data-val="true" data-val-remote="可选项值已存在" data-val-remote-additionalfields="*.frontName" data-val-remote-url="<%=path %>skuManage/valueCheck.html" data-val-remote-type="post"/>
+      		<span class="help-block">
+      			<span data-valmsg-replace="true" data-valmsg-for="frontName" class="field-validation-valid">
+			</span></span>
+			
+			<label for="descInfo" class="control-label">描述：</label>
+			 <input type="text" name="descInfo" class="form-control"/>
+			 <br>
+			 <button type="button" class="btn btn-default">上传</button>
+			 </div>	
+				  </div>
+			</div>
+      		
+      		
+      	</div>
       	<br>
       	<div class="col-md-6 control-group">
       		 启用：<input type="radio" name="state"  value="sku_option_enable">

@@ -94,11 +94,11 @@ public class SkuOptionService implements ISkuOptionService {
     }
 
     @Override
-    public boolean checkValue(String value, String skuAttrId) {
-        boolean checkResult = true;
+    public String checkValue(String value, String skuAttrId) {
+        String checkResult = null;
         List<SkuOption> skuOptionList = skuOptionMapper.checkValue(value, skuAttrId);
         if (null != skuOptionList && !skuOptionList.isEmpty()) {
-            checkResult = false;
+            checkResult = skuOptionList.get(0).getSkuOptionId();
         }
         return checkResult;
     }

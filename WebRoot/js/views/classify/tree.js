@@ -93,6 +93,9 @@
 								categoryId: item.categoryId,
 								propertyId: item.skuAttrId
 						};
+						//填写隐藏域  存储当前的categoryId
+						$("#addSkuForm input[name='categoryId']").val(setting.categoryId);
+						
 						if(item.state == "sku_attr_enable") {
 							setting.status = "enable";
 						} else {

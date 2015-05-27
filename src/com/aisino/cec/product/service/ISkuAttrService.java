@@ -59,7 +59,7 @@ public interface ISkuAttrService {
      * @param categoryId
      * @return
      */
-    boolean checkFrontName(String frontName, String categoryId);
+    String checkFrontName(String frontName, String categoryId);
 
     /**
      * 查询某分类下的sku属性维护名称是否重复
@@ -68,5 +68,5 @@ public interface ISkuAttrService {
      * @param categoryId
      * @return
      */
-    boolean checkStoreName(String storeName, String categoryId);
+    String checkStoreName(String storeName, String categoryId);
 }

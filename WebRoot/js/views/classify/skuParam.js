@@ -14,6 +14,7 @@ $(document).ready(function(){
 		$("#propertyModal button.commit")[0].innerHTML = "添加";
 		$("#frontName").val("");
 		$("#nameDes").val("");
+		$("#maintainName").val("");
 		$("#changeMessage").parent().hide();
 		$("#propertyModal").modal('show');
 
@@ -24,6 +25,11 @@ $(document).ready(function(){
 		var node = nodes[0];
 		
 		$("#addSkuForm input[name='categoryId']").val(node.categoryId);
+		$("#addSkuForm input[name='skuAttrId']").val("");
+		
+		//清除之前的错误信息
+		$("#addSkuForm").validate().resetForm();
+		$("#addSkuForm div span span").html("");
 		
 		$("#propertyModal button.commit")[0].onclick = function() {
 			
@@ -63,9 +69,7 @@ $(document).ready(function(){
 						console.log(data);
 						alert("ajax出错了!");
 					}
-				});
-				
-				
+				});	
 			}
 			
 		};
@@ -82,9 +86,27 @@ $(document).ready(function(){
 		$("#addSkuValueForm div input[name='descInfo']").val("");
 		$("#propertyValueModal").modal('show');
 		$("#choosePic").show();
+		
+		$("#addSkuValueForm div.picPanel").hide();
+		
+		//清除之前的错误信息
+		$("#addSkuValueForm").validate().resetForm();
+		$("#addSkuValueForm div span span").html("");
+		
+		$("#choosePic").click(function(){
+		//	alert("哈哈哈");
+			$("#addSkuValueForm div.picPanel").show();
+			
+			$("#addSkuValueForm div.picPanel button").click(function(){
+				$("#addSkuValueForm div.picPanel").hide();
+			});
+			
+		});
+		
 		$("#addSkuValueForm div input[name='modifyInfo']").parent().hide();
 		var skuAttrId = $("#right-plane div.mainProperty label").attr("skuAttrId");
 		$("#addSkuValueForm input[name='skuAttrId']").val(skuAttrId);
+		$("#addSkuValueForm input[name='skuOptionId']").val("");
 		
 		$("#propertyValueModal button.commit")[0].onclick = function() {
 			if($("#addSkuValueForm").valid()) {
