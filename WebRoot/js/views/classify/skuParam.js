@@ -8,6 +8,106 @@
 })(jQuery);
 
 $(document).ready(function(){
+	
+	//初始化上传图片窗口
+	$("#picUploadForm").appendTo('body');
+	$("#picUploadForm").hide();
+	
+	$("#choosePic").click(function(){
+
+		$("#picUploadForm").show();
+		$("#choosePic").parent().after($("#picUploadForm"));
+		
+		$("#picUploadForm div.picPanel button").click(function(){
+			$("#picUploadForm").appendTo('body');
+			$("#picUploadForm").hide();
+		});
+	});
+	
+	window.skuParam = $.fn.skuParam = {
+		uploadImage: function() {
+			$("#uploadImg").ajaxStart(function() {
+			//	$.jBox.tip("正在上传...", 'loading');
+				console.log("正在上传。。。。");
+			}).ajaxComplete(function() {
+			//	$.jBox.closeTip();
+			});
+			var file = $("#uploadImg").val();
+			if (file == "") {
+			//	$.jBox.info('请选择上传的图片!', '提示');
+				return false;
+			} else {
+				// 判断上传的文件的格式是否正确
+				var fileType = file.substring(file.lastIndexOf(".") + 1)
+						.toLowerCase();
+				if (fileType != "jpg" && fileType != "png" && fileType != "gif" && fileType != "bmp" && fileType != "jpeg") {
+				//	$.jBox.info('上传图片格式错误', '提示');
+					alert("上传图片格式错误");
+					return false;
+				} else {
+					$.ajaxFileUpload( {
+					//	url : basePath + "loan/uploadContractPictures.html",
+						//填写上传图片url
+						url : basePath + "skuManage/uploadImage.html?" + new Date().getTime(),
+						secureuri : false,
+						fileElementId : 'uploadImg',
+						dataType : 'JSON',
+						data: $("#picUploadForm").serialize(),
+						success : function(data) {
+							console.log(data);
+							var json = eval("(" + data + ")");
+							if ("NONE" == json.uploadResultCode) {
+							//	$.jBox.info("图片没有上传成功!", "提示");
+							} else if ("NOTALLOW" == json.uploadResultCode) {
+							//	$.jBox.info("上传图片格式错误,要求为jpg、gif、png、jpeg或bmp!", "提示");
+							} else if("toBig" == json.uploadResultCode) {
+							//	$.jBox.info("上传的文件最大为5MB!", "提示");
+							} else if ("SUCCESS" == json.uploadResultCode) {
+								// 图片数据存库后展示在前台页面
+								$("#imgPreview").attr("src", json.imageData);
+							//	$("#displayImg img").attr("src", json.imageData);
+								
+								//上传提交图片信息
+//								$.ajax({
+//									url: basePath + "",
+//									dataType: "json",
+//									async: false,
+//									type: "post", 
+//									data: $("#picUploadForm").serialize(),
+//									success: function(data) {
+//										
+//									} ,
+//									error: function(data) {
+//										alert("出错了！");
+//									}
+//								});
+								
+//								var imagesHtml = $("#contractImageDiv").html();
+//								var imageHtml =
+//											"<div class=\"contractimagebox\"><div class=\"img-thumbnail\"><img class=\"contractimageboximg\" src=\""
+//												+ json.contractImages.thumbnailsByteData + "\" title=\"" + json.contractImages.imageName + "\" alt=\"" + json.contractImages.imageName + "\"  /></div>" 
+//												+ "<button type=\"botton\" class=\"btn btn-default contractimagedelete\" onclick=\"loan.removeImg('"+json.contractImages.imageId +"'); return false;\">删除</button></div>";
+//								$("#contractImageDiv").html(imagesHtml + imageHtml);
+								$("#uploadImg").val("");
+							} else {
+								if ("failure" == json.uploadResultCode) {
+							//		$.jBox.error("上传失败！请重试", "提示信息");
+									alert("上传失败");
+									return false;
+								}
+							}
+						},
+						error : function(data, status, e) {
+						//	$.jBox.error("与服务器通信失败！请稍后重试", "提示信息");
+							alert("出错了！");
+							return false;
+						}
+					});
+				}
+			}
+		}	
+	};
+	
 	//添加SKU属性
 	$("#add-sku").click(function() {
 		$("#propertyModal h4.modal-title")[0].innerHTML = "添加SKU属性";
@@ -75,7 +175,6 @@ $(document).ready(function(){
 		};
 	});
 	
-	
 
 	//添加SKU属性值
 	$("#add-skuValue").click(function() {
@@ -87,21 +186,11 @@ $(document).ready(function(){
 		$("#propertyValueModal").modal('show');
 		$("#choosePic").show();
 		
-		$("#addSkuValueForm div.picPanel").hide();
-		
 		//清除之前的错误信息
 		$("#addSkuValueForm").validate().resetForm();
 		$("#addSkuValueForm div span span").html("");
 		
-		$("#choosePic").click(function(){
-		//	alert("哈哈哈");
-			$("#addSkuValueForm div.picPanel").show();
-			
-			$("#addSkuValueForm div.picPanel button").click(function(){
-				$("#addSkuValueForm div.picPanel").hide();
-			});
-			
-		});
+		
 		
 		$("#addSkuValueForm div input[name='modifyInfo']").parent().hide();
 		var skuAttrId = $("#right-plane div.mainProperty label").attr("skuAttrId");

@@ -107,7 +107,6 @@
 			//删除操作
 			if (confirm("确定要删除" + $inputBox.val())) {
 				//todo 从库中删除(置状态)
-
 				$reButton.attr("disabled", "disabled");
 				$inputBox.attr("disabled", "disabled");
 				$inputBox.attr("class", "delete");
@@ -131,8 +130,6 @@
 		$opButton.html("修改");
 
 		$opButton.click(function() {
-			//				$("#propertyName").val($a.html());
-			//				$("#propertyDes").val(setting.inputBoxDes);
 			$("#choosePic").hide();
 			$("#frontName").val($inputBox.val());
 			$("#nameDes").val();
@@ -146,6 +143,16 @@
 			//清除之前出现的错误信息
 			$("#addSkuForm").validate().resetForm();
 			$("#addSkuForm div span span").html("");
+			
+			
+			//绑定设置状态的事件
+			$("#enable").on("ifChecked", function(event) {
+				setting.status = "enable";
+			});
+
+			$("#disable").on("ifChecked", function(event) {
+				setting.status = "disable";
+			});
 			
 			$.ajax({
 				url: basePath + "skuManage/skuAttr/" + $inputBox.attr("id") + ".html?" + new Date().getTime(),
@@ -202,8 +209,11 @@
 						success: function(data) {
 							if (data.result == "true") {
 								//若状态为启用状态
-								if (setting.status == "enable") {
+								//console.log(data);
+								if (data.state == "sku_attr_enable") {
 									$group.removeClass("delete");
+								} else {
+									$group.addClass("delete");
 								}
 								$("#propertyModal").modal('hide');
 								$inputBox.val($("#frontName").val());
@@ -217,13 +227,7 @@
 
 			};
 
-			$("#enable").on("ifChecked", function(event) {
-				setting.status = "enable";
-			});
-
-			$("#disable").on("ifChecked", function(event) {
-				setting.status = "disable";
-			});
+			
 
 		});
 
@@ -295,9 +299,6 @@
 		$img = $("<img>").attr("src", setting.imgPath).css("width", "45px").css("height", "45px");
 		//			$imgDiv = $("<div>").css("width", "100px").css("height", "100px").css("float", "left").append($img);
 		$group = $("<div>").append($img).append("\n").append($inputBox).append("\n").append($opButton).append("\n").css("padding", "10px");
-
-		
-		
 		
 		$opButton.click(function() {
 			$("#addSkuValueForm div input[name='descInfo']").val("");
@@ -312,8 +313,11 @@
 			$("#addSkuValueForm").validate().resetForm();
 			$("#addSkuValueForm div span span").html("");
 			
-			//todo  sku属性值的修改
-
+			//将图片上传模块隐藏
+			$("#picUploadForm").appendTo('body');
+			$("#picUploadForm").hide();
+			
+			//sku属性值的修改
 			$.ajax({
 				url: basePath + "skuManage/showSkuOption/" + $inputBox.attr("id") + ".html?" + new Date().getTime(),
 				dataType: "json",
@@ -324,7 +328,6 @@
 					console.log(data);
 					$("#value").val(data.value);
 					$("#addSkuValueForm div input[name='descInfo']").val(data.descInfo);
-
 					var $stateRadio = $("#addSkuValueForm div input[name='state']"),
 						$typeInfoRadio = $("#addSkuValueForm div input[name='typeInfo']");
 					for (var i = 0; i < $stateRadio.length; i++) {
@@ -347,7 +350,7 @@
 				//todo 进行ajax调用，修改库表中的值
 				if ($("#addSkuValueForm").valid()) {
 					$.ajax({
-						url: basePath + "skuManage/updateSkuOption/"+ +".html?" + new Date().getTime(),
+						url: basePath + "skuManage/updateSkuOption/"+ $inputBox.attr("id") +".html?" + new Date().getTime(),
 						dataType: "json",
 						async: false,
 						type: "post",
@@ -355,9 +358,14 @@
 						success: function(data) {
 							if (data.result == "true") {
 								//若状态为启用状态
-								if (setting.status == "enable") {
+								//console.log(setting);
+								if (data.state == "sku_option_enable") {
 									$group.removeClass("delete");
+								} else {
+									$group.addClass("delete");
 								}
+								
+								
 								$("#propertyValueModal").modal('hide');
 								$inputBox.val($("#value").val());
 							}

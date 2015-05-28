@@ -19,7 +19,9 @@
 	<script type="text/javascript" src="<%=path%>js/bootstrap/plugin/iCheck/js/icheck.min.js"></script>
 
 	<script type="text/javascript" src="<%=path%>js/ztree/jquery.ztree.core-3.5.js"></script>
-
+	
+	<script src="<%=path %>js/util/ajaxfileupload.js"></script>
+	
 	<script src="<%=path %>js/views/classify/tree.js"></script>
 	<script src="<%=path %>js/views/classify/PropertyGroup.js"></script>
 	<script src="<%=path %>js/views/classify/skuParam.js"></script>
@@ -256,43 +258,15 @@
       	</div>
         <br>
         <div class="control-group picture">
-     	可选图片：<input type="button"  name="imageId" value="选择图片" id="choosePic"/>
+     	可选图片：<input type="button"  name="imageId" value="选择图片" id="choosePic"/>   	
+     	</div>
+     	<br>
+     	<div id="displayImg">
+     		<img alt="图片1" src="<%=path %>images/11.png" title="图片" id="imgPreview" style="width:50px;height:50px;"/>
+     		<button type="button" class="btn btn-default">删除</button>
      	</div>
       	<br>
-      	<div class="control-group  picPanel">
-      		
-      		
-      		<div class="panel panel-primary">
-				
-				 <div class="panel-body">
-				    <div class="imageSelect">
-      		<input type="file" name="imageUrl" value="图片"/>
-      		<br>
-      		<label class="control-label">存储名称：</label>
-      		<input type="text" name="storeName" data-val-regex-pattern="(?!^\d[A-Za-z0-9]*$)^[A-Za-z0-9_-]{1,25}$" data-val-regex="用户名只允许字母、数字、下划线、横线组成，首位只能为字母，小于25个字符。"
-      		 data-val-required="请填写名称" data-val="true" class="form-control" 
-      		 data-val="true" data-val-remote="可选项值已存在" data-val-remote-additionalfields="*.storeName" data-val-remote-url="<%=path %>skuManage/valueCheck.html" data-val-remote-type="post"/>
-      		<span class="help-block">
-      			<span data-valmsg-replace="true" data-valmsg-for="storeName" class="field-validation-valid">
-			</span></span>
-      		
-      		<label class="control-label">图片名称：</label>
-      		<input type="text" name="frontName"   data-val-length-max="64" data-val-length="可选项值小于64位字符" data-val-required="请填写名称" data-val="true" class="form-control" 
-      		data-val="true" data-val-remote="可选项值已存在" data-val-remote-additionalfields="*.frontName" data-val-remote-url="<%=path %>skuManage/valueCheck.html" data-val-remote-type="post"/>
-      		<span class="help-block">
-      			<span data-valmsg-replace="true" data-valmsg-for="frontName" class="field-validation-valid">
-			</span></span>
-			
-			<label for="descInfo" class="control-label">描述：</label>
-			 <input type="text" name="descInfo" class="form-control"/>
-			 <br>
-			 <button type="button" class="btn btn-default">上传</button>
-			 </div>	
-				  </div>
-			</div>
-      		
-      		
-      	</div>
+      
       	<br>
       	<div class="col-md-6 control-group">
       		 启用：<input type="radio" name="state"  value="sku_option_enable">
@@ -332,6 +306,41 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+
+<!-- 图片上传 -->
+<form:form id="picUploadForm" method="post" action="" style="display:none;">
+      	<div class="control-group  picPanel">
+      		<div class="panel panel-primary">
+				
+				 <div class="panel-body">
+				    <div class="imageSelect">
+      		<input type="file" id="uploadImg" name="uploadImg" value="图片"/>
+      		<br>
+      		<label class="control-label">存储名称：</label>
+      		<input type="text" name="storeName" data-val-regex-pattern="(?!^\d[A-Za-z0-9]*$)^[A-Za-z0-9_-]{1,25}$" data-val-regex="用户名只允许字母、数字、下划线、横线组成，首位只能为字母，小于25个字符。"
+      		 data-val-required="请填写名称" data-val="true" class="form-control" 
+      		 data-val="true" data-val-remote="可选项值已存在" data-val-remote-additionalfields="*.storeName" data-val-remote-url="<%=path %>skuManage/valueCheck.html" data-val-remote-type="post"/>
+      		<span class="help-block">
+      			<span data-valmsg-replace="true" data-valmsg-for="storeName" class="field-validation-valid">
+			</span></span>
+      		
+      		<label class="control-label">图片名称：</label>
+      		<input type="text" name="frontName"   data-val-length-max="64" data-val-length="可选项值小于64位字符" data-val-required="请填写名称" data-val="true" class="form-control" 
+      		data-val="true" data-val-remote="可选项值已存在" data-val-remote-additionalfields="*.frontName" data-val-remote-url="<%=path %>skuManage/valueCheck.html" data-val-remote-type="post"/>
+      		<span class="help-block">
+      			<span data-valmsg-replace="true" data-valmsg-for="frontName" class="field-validation-valid">
+			</span></span>
+			
+			<label for="descInfo" class="control-label">描述：</label>
+			 <input type="text" name="descInfo" class="form-control"/>
+			 <br>
+			 <button type="button" class="btn btn-default" onclick="return skuParam.uploadImage();">上传</button>
+			 </div>	
+				  </div>
+			</div>
+      	</div>
+</form:form>
 
 <script>
 				$(document).ready(function(){

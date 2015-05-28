@@ -10,6 +10,7 @@
  */
 package com.aisino.cec.product.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +20,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -26,7 +29,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import sun.misc.BASE64Encoder;
 
 import com.aisino.cec.common.util.random.IMajorKey;
 import com.aisino.cec.common.util.web.BaseController;
@@ -42,18 +49,9 @@ import com.aisino.cec.user.service.IUserService;
 
 /**
  * @ClassName: SkuController
- * @Description: TODO(用一句话描述这个类的作用)
+ * @Description: sku属性和属性值操作
  * @author cr
  * @version V1.0
- */
-
-/**  
- * @Package com.aisino.cec.product.controller  
- * @ClassName: SkuController  
- * @Description: TODO(用一句话描述这个类的作用)  
- * @author cr  
- * @date 2015-5-25 上午11:15:25  
- * @version V1.0    
  */
 
 @Controller
@@ -114,8 +112,6 @@ public class SkuController extends BaseController{
         
         SkuAttr skuAttr = skuAttrService.findSkuAttrById(skuAttrId);
         ObjectMapper resultMapper = new ObjectMapper();
-        Map<String, Object> result = new HashMap<String, Object>();
-        
         resultMapper.writeValue(response.getWriter(), skuAttr);
     }
     
@@ -213,7 +209,7 @@ public class SkuController extends BaseController{
             if(resultCheck) {
                 result.put("result", "true");
                 result.put("skuAttrId", skuAttr.getSkuAttrId());
-         
+                result.put("state", skuAttr.getState());
             } else {
                 result.put("result", "false");
             }
@@ -247,6 +243,16 @@ public class SkuController extends BaseController{
 
     }
     
+    /**
+     * 插入一条sku属性值信息
+     * @param skuOption
+     * @param skuAttrId
+     * @param request
+     * @param response
+     * @throws JsonGenerationException
+     * @throws JsonMappingException
+     * @throws IOException
+     */
     @RequestMapping("/insertSkuOption/{skuAttrId}")
     @ResponseBody
     public void insertSkuOption(SkuOption skuOption, @PathVariable String skuAttrId, HttpServletRequest request, HttpServletResponse response)
@@ -343,6 +349,7 @@ public class SkuController extends BaseController{
             if(resultCheck) {
                 result.put("result", "true");
                 result.put("skuOptionId", skuOption.getSkuOptionId());
+                result.put("state", skuOption.getState());
          
             } else {
                 result.put("result", "false");
@@ -354,4 +361,88 @@ public class SkuController extends BaseController{
         
         resultMapper.writeValue(response.getWriter(), result);
     }
+    
+    /**
+     * 上传图片
+     * @param uploader
+     * @param response
+     * @throws JsonGenerationException
+     * @throws JsonMappingException
+     * @throws IOException
+     */
+    @RequestMapping("/uploadImage")
+    @ResponseBody
+    public void uploadImage(@RequestParam MultipartFile uploadImg, HttpServletRequest request, HttpServletResponse response) throws JsonGenerationException,
+        JsonMappingException, IOException {
+        
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> map = new HashMap<String, Object>();
+        // 上传处理默认为失败的状态
+        String uploadResultCode = "failure";
+        byte[] fileData = null;
+        try {
+            if (null == uploadImg) {
+                // 未上传文件
+                uploadResultCode = "NONE";
+            } else {
+                String fileName = uploadImg.getOriginalFilename();
+                // 允许上传的文件格式
+                String regex = "(?i).+?\\.(jpg|png|gif|bmp|jpeg)";
+                if (!fileName.matches(regex)) {
+                    // 上传的文件格式为不允许上传的格式
+                    uploadResultCode = "NOTALLOW";
+                } else if(uploadImg.getSize()/1024/1024 > 5) {
+                    uploadResultCode = "toBig";
+                }else {
+                    
+                    File f=new File(request.getContextPath()+"/images/"+fileName);  
+                    String a = request.getContextPath()+"/images/"+fileName;
+                    System.out.println(a);
+                    try {  
+                        FileUtils.copyInputStreamToFile(uploadImg.getInputStream(),f );  
+                    } catch (IOException e) {  
+                        e.printStackTrace();  
+                    }  
+                    uploadResultCode = "SUCCESS";
+                    
+                    // 创建图片对象
+                //    ImagesEntity imagesEntity = new ImagesEntity();
+                    // 设置图片主键
+                //    imagesEntity.setImageId(RandomGUIDUtil.getValue());
+                    // 保存图片名称
+                //    imagesEntity.setImageName(fileName);
+                    // 保存图片类型
+                //    imagesEntity.setImageType(ImageTypeEnum.IMAGE_TYPE_GUARANTEE.getValue());
+               //     String imageSuffix = fileName.substring(fileName.lastIndexOf("."));
+               //     imagesEntity.setImageSuffix(imageSuffix);
+                    // 取上传图片的数据
+                    fileData = IOUtils.toByteArray(uploadImg.getInputStream());
+                    IOUtils.closeQuietly(uploadImg.getInputStream());
+                    // 图片数据需要经过base64转码
+                    BASE64Encoder enc = new BASE64Encoder();
+                //    imagesEntity.setImageByteData("data:image/gif;base64," + enc.encode(fileData));
+                    // 转换为缩略图
+              //      byte[] thumbnailsByte = ImageUtil.byteToThumbnails(fileData, 175, 225, true);
+               //     imagesEntity.setThumbnailsByteData("data:image/gif;base64," + enc.encode(thumbnailsByte));
+                    
+                    String thumbnailsByteData = "data:image/gif;base64," + enc.encode(fileData);
+                    
+                    // 图片缓存在全局变量内
+              //      this.contractPicturesData.add(imagesEntity);
+                    // 上传文件成功
+                    uploadResultCode = "SUCCESS";
+             //       map.put("contractImages", imagesEntity);
+                    
+                    map.put("imageData", thumbnailsByteData);
+
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        map.put("uploadResultCode", uploadResultCode);
+        response.setContentType("text/html;charset=UTF-8");
+        mapper.writeValue(response.getWriter(), map);
+    }
+    
 }
