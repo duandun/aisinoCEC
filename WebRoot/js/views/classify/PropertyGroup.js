@@ -137,14 +137,14 @@
 			$("#propertyModal button.commit")[0].innerHTML = "修改";
 			$("#changeMessage").parent().show();
 			$("#propertyModal").modal('show');
-			
+
 			$("#addSkuForm input[name='skuAttrId']").val($inputBox.attr("id"));
-			
+
 			//清除之前出现的错误信息
 			$("#addSkuForm").validate().resetForm();
 			$("#addSkuForm div span span").html("");
-			
-			
+
+
 			//绑定设置状态的事件
 			$("#enable").on("ifChecked", function(event) {
 				setting.status = "enable";
@@ -153,14 +153,14 @@
 			$("#disable").on("ifChecked", function(event) {
 				setting.status = "disable";
 			});
-			
+
 			$.ajax({
 				url: basePath + "skuManage/skuAttr/" + $inputBox.attr("id") + ".html?" + new Date().getTime(),
 				dataType: "json",
 				async: false,
 				type: "get",
 				data: {
-					
+
 				},
 				success: function(data) {
 					$("#frontName").val(data.frontName);
@@ -201,7 +201,7 @@
 			$("#propertyModal button.commit")[0].onclick = function() {
 				if ($("#addSkuForm").valid()) {
 					$.ajax({
-						url: basePath + "skuManage/updateSkuAttr/"+$inputBox.attr("id") +".html?" + new Date().getTime(),
+						url: basePath + "skuManage/updateSkuAttr/" + $inputBox.attr("id") + ".html?" + new Date().getTime(),
 						dataType: "json",
 						async: false,
 						type: "post",
@@ -227,7 +227,7 @@
 
 			};
 
-			
+
 
 		});
 
@@ -299,24 +299,24 @@
 		$img = $("<img>").attr("src", setting.imgPath).css("width", "45px").css("height", "45px");
 		//			$imgDiv = $("<div>").css("width", "100px").css("height", "100px").css("float", "left").append($img);
 		$group = $("<div>").append($img).append("\n").append($inputBox).append("\n").append($opButton).append("\n").css("padding", "10px");
-		
+
 		$opButton.click(function() {
 			$("#addSkuValueForm div input[name='descInfo']").val("");
 			$("#propertyValueModal h4.modal-title")[0].innerHTML = "修改SKU属性值";
 			$("#propertyValueModal button.commit")[0].innerHTML = "修改";
 			$("#propertyValueModal").modal('show');
 			$("#addSkuValueForm div input[name='modifyInfo']").parent().show();
-			
+
 			$("#addSkuValueForm input[name='skuOptionId']").val($inputBox.attr("id"));
-			
+
 			//清除之前的错误信息
 			$("#addSkuValueForm").validate().resetForm();
 			$("#addSkuValueForm div span span").html("");
-			
+
 			//将图片上传模块隐藏
 			$("#picUploadForm").appendTo('body');
 			$("#picUploadForm").hide();
-			
+
 			//sku属性值的修改
 			$.ajax({
 				url: basePath + "skuManage/showSkuOption/" + $inputBox.attr("id") + ".html?" + new Date().getTime(),
@@ -350,7 +350,7 @@
 				//todo 进行ajax调用，修改库表中的值
 				if ($("#addSkuValueForm").valid()) {
 					$.ajax({
-						url: basePath + "skuManage/updateSkuOption/"+ $inputBox.attr("id") +".html?" + new Date().getTime(),
+						url: basePath + "skuManage/updateSkuOption/" + $inputBox.attr("id") + ".html?" + new Date().getTime(),
 						dataType: "json",
 						async: false,
 						type: "post",
@@ -364,8 +364,8 @@
 								} else {
 									$group.addClass("delete");
 								}
-								
-								
+
+
 								$("#propertyValueModal").modal('hide');
 								$inputBox.val($("#value").val());
 							}
@@ -376,7 +376,7 @@
 					});
 				}
 			};
-			
+
 			$("#addSkuValueForm div input[name='state']").eq(0).on("ifChecked", function(event) {
 				setting.status = "enable";
 			});

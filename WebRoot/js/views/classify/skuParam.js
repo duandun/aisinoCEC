@@ -2,112 +2,89 @@
  * 添加属性和SKU时候的输入框控件，包含输入框，修改，移除，添加等操作
  */
 
-(function($){
-	
-	
+(function($) {
+
+
 })(jQuery);
 
-$(document).ready(function(){
-	
+$(document).ready(function() {
+
 	//初始化上传图片窗口
 	$("#picUploadForm").appendTo('body');
 	$("#picUploadForm").hide();
-	
-	$("#choosePic").click(function(){
+
+	$("#choosePic").click(function() {
 
 		$("#picUploadForm").show();
 		$("#choosePic").parent().after($("#picUploadForm"));
-		
-		$("#picUploadForm div.picPanel button").click(function(){
+
+		$("#picUploadForm div.picPanel button").click(function() {
 			$("#picUploadForm").appendTo('body');
 			$("#picUploadForm").hide();
 		});
 	});
-	
+
 	window.skuParam = $.fn.skuParam = {
 		uploadImage: function() {
 			$("#uploadImg").ajaxStart(function() {
-			//	$.jBox.tip("正在上传...", 'loading');
+				//	$.jBox.tip("正在上传...", 'loading');
 				console.log("正在上传。。。。");
 			}).ajaxComplete(function() {
-			//	$.jBox.closeTip();
+				//	$.jBox.closeTip();
 			});
 			var file = $("#uploadImg").val();
 			if (file == "") {
-			//	$.jBox.info('请选择上传的图片!', '提示');
+				//	$.jBox.info('请选择上传的图片!', '提示');
 				return false;
 			} else {
 				// 判断上传的文件的格式是否正确
 				var fileType = file.substring(file.lastIndexOf(".") + 1)
-						.toLowerCase();
+					.toLowerCase();
 				if (fileType != "jpg" && fileType != "png" && fileType != "gif" && fileType != "bmp" && fileType != "jpeg") {
-				//	$.jBox.info('上传图片格式错误', '提示');
+					//	$.jBox.info('上传图片格式错误', '提示');
 					alert("上传图片格式错误");
 					return false;
 				} else {
-					$.ajaxFileUpload( {
-					//	url : basePath + "loan/uploadContractPictures.html",
+					$.ajaxFileUpload({
+						//	url : basePath + "loan/uploadContractPictures.html",
 						//填写上传图片url
-						url : basePath + "skuManage/uploadImage.html?" + new Date().getTime(),
-						secureuri : false,
-						fileElementId : 'uploadImg',
-						dataType : 'JSON',
+						url: basePath + "skuManage/uploadImage.html?" + new Date().getTime(),
+						secureuri: false,
+						fileElementId: 'uploadImg',
+						dataType: 'JSON',
 						data: $("#picUploadForm").serialize(),
-						success : function(data) {
+						success: function(data) {
 							console.log(data);
 							var json = eval("(" + data + ")");
 							if ("NONE" == json.uploadResultCode) {
-							//	$.jBox.info("图片没有上传成功!", "提示");
+								//	$.jBox.info("图片没有上传成功!", "提示");
 							} else if ("NOTALLOW" == json.uploadResultCode) {
-							//	$.jBox.info("上传图片格式错误,要求为jpg、gif、png、jpeg或bmp!", "提示");
-							} else if("toBig" == json.uploadResultCode) {
-							//	$.jBox.info("上传的文件最大为5MB!", "提示");
+								//	$.jBox.info("上传图片格式错误,要求为jpg、gif、png、jpeg或bmp!", "提示");
+							} else if ("toBig" == json.uploadResultCode) {
+								//	$.jBox.info("上传的文件最大为5MB!", "提示");
 							} else if ("SUCCESS" == json.uploadResultCode) {
 								// 图片数据存库后展示在前台页面
 								$("#imgPreview").attr("src", json.imageData);
-							//	$("#displayImg img").attr("src", json.imageData);
-								
-								//上传提交图片信息
-//								$.ajax({
-//									url: basePath + "",
-//									dataType: "json",
-//									async: false,
-//									type: "post", 
-//									data: $("#picUploadForm").serialize(),
-//									success: function(data) {
-//										
-//									} ,
-//									error: function(data) {
-//										alert("出错了！");
-//									}
-//								});
-								
-//								var imagesHtml = $("#contractImageDiv").html();
-//								var imageHtml =
-//											"<div class=\"contractimagebox\"><div class=\"img-thumbnail\"><img class=\"contractimageboximg\" src=\""
-//												+ json.contractImages.thumbnailsByteData + "\" title=\"" + json.contractImages.imageName + "\" alt=\"" + json.contractImages.imageName + "\"  /></div>" 
-//												+ "<button type=\"botton\" class=\"btn btn-default contractimagedelete\" onclick=\"loan.removeImg('"+json.contractImages.imageId +"'); return false;\">删除</button></div>";
-//								$("#contractImageDiv").html(imagesHtml + imageHtml);
 								$("#uploadImg").val("");
 							} else {
 								if ("failure" == json.uploadResultCode) {
-							//		$.jBox.error("上传失败！请重试", "提示信息");
+									//		$.jBox.error("上传失败！请重试", "提示信息");
 									alert("上传失败");
 									return false;
 								}
 							}
 						},
-						error : function(data, status, e) {
-						//	$.jBox.error("与服务器通信失败！请稍后重试", "提示信息");
+						error: function(data, status, e) {
+							//	$.jBox.error("与服务器通信失败！请稍后重试", "提示信息");
 							alert("出错了！");
 							return false;
 						}
 					});
 				}
 			}
-		}	
+		}
 	};
-	
+
 	//添加SKU属性
 	$("#add-sku").click(function() {
 		$("#propertyModal h4.modal-title")[0].innerHTML = "添加SKU属性";
@@ -123,43 +100,42 @@ $(document).ready(function(){
 		var nodes = zTree.getSelectedNodes();
 		//当前被选中的树节点
 		var node = nodes[0];
-		
+
 		$("#addSkuForm input[name='categoryId']").val(node.categoryId);
 		$("#addSkuForm input[name='skuAttrId']").val("");
-		
+
 		//清除之前的错误信息
 		$("#addSkuForm").validate().resetForm();
 		$("#addSkuForm div span span").html("");
-		
 		$("#propertyModal button.commit")[0].onclick = function() {
-			
-			if($("#addSkuForm").valid()) {
+
+			if ($("#addSkuForm").valid()) {
 				var setting = {
-						category: "skuProperty",
-						status: "disable",
-						inputBoxValue: $("#frontName").val().trim(),
-						inputBoxDes: $("#nameDes").val().trim()
+					category: "skuProperty",
+					status: "disable",
+					inputBoxValue: $("#frontName").val().trim(),
+					inputBoxDes: $("#nameDes").val().trim()
 				};
 
 				$.ajax({
-					type:"post",
-					url: basePath + "skuManage/insertSkuAttr/"+node.categoryId+".html?" + new Date().getTime(),
+					type: "post",
+					url: basePath + "skuManage/insertSkuAttr/" + node.categoryId + ".html?" + new Date().getTime(),
 					dataType: "json",
 					async: false,
-					data:  $("#addSkuForm").serialize(),
+					data: $("#addSkuForm").serialize(),
 					success: function(data) {
-						if(data.result=="true") {
-							$("#enable").on("ifChecked",function(event){
+						if (data.result == "true") {
+							$("#enable").on("ifChecked", function(event) {
 								setting.status = "enable";
 							});
-							
-							$("#disable").on("ifChecked", function(event){
+
+							$("#disable").on("ifChecked", function(event) {
 								setting.status = "disable";
 							});
 							setting.propertyId = data.skuAttrId;
 							var $group = PropertyGroup.init(setting);
 							$("#middle-plane ul.list").append($group);
-						
+
 							$("#propertyModal").modal('hide');
 						} else {
 							alert("出错了!");
@@ -169,70 +145,67 @@ $(document).ready(function(){
 						console.log(data);
 						alert("ajax出错了!");
 					}
-				});	
+				});
 			}
-			
+
 		};
 	});
-	
+
 
 	//添加SKU属性值
 	$("#add-skuValue").click(function() {
-		
+
 		$("#propertyValueModal h4.modal-title")[0].innerHTML = "添加SKU属性值";
 		$("#propertyValueModal button.commit")[0].innerHTML = "添加";
 		$("#value").val("");
 		$("#addSkuValueForm div input[name='descInfo']").val("");
 		$("#propertyValueModal").modal('show');
 		$("#choosePic").show();
-		
+
 		//清除之前的错误信息
 		$("#addSkuValueForm").validate().resetForm();
 		$("#addSkuValueForm div span span").html("");
-		
-		
-		
 		$("#addSkuValueForm div input[name='modifyInfo']").parent().hide();
 		var skuAttrId = $("#right-plane div.mainProperty label").attr("skuAttrId");
 		$("#addSkuValueForm input[name='skuAttrId']").val(skuAttrId);
 		$("#addSkuValueForm input[name='skuOptionId']").val("");
-		
+
 		$("#propertyValueModal button.commit")[0].onclick = function() {
-			if($("#addSkuValueForm").valid()) {
+			if ($("#addSkuValueForm").valid()) {
 				var setting = {
-						category: "skuValue",
-						status: "disable",
-						inputBoxValue: $("#value").val().trim(),
-						inputBoxDes: $("#addSkuValueForm div input[name='descInfo']").val().trim()
+					category: "skuValue",
+					status: "disable",
+					inputBoxValue: $("#value").val().trim(),
+					inputBoxDes: $("#addSkuValueForm div input[name='descInfo']").val().trim()
 				};
-			
-				$("#enable").on("ifChecked",function(event){
+
+				$("#enable").on("ifChecked", function(event) {
 					setting.status = "enable";
 				});
-			
-				$("#disable").on("ifChecked", function(event){
+
+				$("#disable").on("ifChecked", function(event) {
 					setting.status = "disable";
 				});
-				
+
 				$.ajax({
-					url: basePath + "skuManage/insertSkuOption/" +skuAttrId+".html?" + new Date().getTime(),
+					url: basePath + "skuManage/insertSkuOption/" + skuAttrId + ".html?" + new Date().getTime(),
 					dataType: "json",
 					type: "post",
 					async: false,
 					data: $("#addSkuValueForm").serialize(),
 					success: function(data) {
-						if(data.result=="true") {
-							$("#enable").on("ifChecked",function(event){
+						if (data.result == "true") {
+							$("#enable").on("ifChecked", function(event) {
 								setting.status = "enable";
 							});
-							
-							$("#disable").on("ifChecked", function(event){
+
+							$("#disable").on("ifChecked", function(event) {
 								setting.status = "disable";
 							});
 							setting.propertyId = data.skuOptionId;
 							var $group = PropertyGroup.init(setting);
 							$("#right-plane ul.list").append($group);
-						
+
 							$("#propertyModal").modal('hide');
 						} else {
 							alert("出错了!");
@@ -243,7 +216,6 @@ $(document).ready(function(){
 					}
 				});
 			}
-			
 		};
 	});
 

@@ -1,4 +1,4 @@
-(function($){
+(function($) {
 
 	var defaultSetting = {
 		view: {
@@ -17,19 +17,19 @@
 				enable: true
 			}
 		},
-		async: {  //异步加载数据
+		async: { //异步加载数据
 			enable: true,
 			autoParam: ["id"],
 			contentType: "application/x-www-form-urlencoded",
 			dataType: "text",
 			otherParam: [],
 			type: "post",
-			url:getUrl,
+			url: getUrl,
 			dataFilter: dataFilter
 		},
 		callback: {
-//			beforeDrag: beforeDrag,
-//			beforeDrop: beforeDrop,
+			//			beforeDrag: beforeDrag,
+			//			beforeDrop: beforeDrop,
 			beforeEditName: beforeEditName,
 			beforeRemove: beforeRemove,
 			onClick: onClick,
@@ -40,166 +40,185 @@
 		}
 	};
 
-	var zNodes =[
-	          {name:"500个节点", id:"1", count:500, times:1, isParent:true},
-	          {name:"1000个节点", id:"2", count:1000, times:1, isParent:true},
-	          {name:"2000个节点", id:"3", count:2000, times:1, isParent:true}
-	];
-	
+	var zNodes = [{
+		name: "500个节点",
+		id: "1",
+		count: 500,
+		times: 1,
+		isParent: true
+	}, {
+		name: "1000个节点",
+		id: "2",
+		count: 1000,
+		times: 1,
+		isParent: true
+	}, {
+		name: "2000个节点",
+		id: "3",
+		count: 2000,
+		times: 1,
+		isParent: true
+	}];
+
 	function dataFilter(treeId, parentNode, responseData) {
-//		console.log(responseData);
+		//		console.log(responseData);
 		return responseData;
 	}
 
 	function onClick(event, treeId, treeNode) {
 		//	alert(treeNode.name);
-			//从服务器端获取规格参数或sku属性并显示
+		//从服务器端获取规格参数或sku属性并显示
 		//	$.ajax();
-			if(treeNode.del) {
-				return false;
+		if (treeNode.del) {
+			return false;
+		}
+
+		$("#middle-plane ul.list").empty();
+		$("#right-plane ul.list").empty();
+		$("#add-property").hide();
+		$("#add-viceProperty").hide();
+		$("#add-sku").hide();
+		$("#add-skuValue").hide();
+		$("#choosePic").hide();
+		$("#right-plane input.searchInput").hide();
+		$("#searchSkuValue").hide();
+		$("#right-plane div.mainProperty").hide();
+
+		if (treeNode.isParent) {
+			return false;
+		}
+
+		var $group;
+
+		//展现sku属性列表
+		$.ajax({
+			url: basePath + "skuManage/category/" + treeNode.categoryId + ".html?" + new Date().getTime(),
+			dataType: "json",
+			async: false,
+			type: "get",
+			data: {
+
+			},
+			success: function(data) {
+				$.each(data, function(i, item) {
+					var setting = {
+						inputBoxValue: item.frontName,
+						category: classifyTree.category,
+						categoryId: item.categoryId,
+						propertyId: item.skuAttrId
+					};
+					//填写隐藏域  存储当前的categoryId
+					$("#addSkuForm input[name='categoryId']").val(setting.categoryId);
+
+					if (item.state == "sku_attr_enable") {
+						setting.status = "enable";
+					} else {
+						setting.status = "disable";
+					}
+					$group = PropertyGroup.init(setting);
+					$("#middle-plane ul.list").append($group);
+				});
+
+			},
+			error: function(data) {
+				alert("出错了！");
 			}
-			
-			$("#middle-plane ul.list").empty();
-			$("#right-plane ul.list").empty();
-			$("#add-property").hide();
-			$("#add-viceProperty").hide();
-			$("#add-sku").hide();
-			$("#add-skuValue").hide();
-			$("#choosePic").hide();
-			$("#right-plane input.searchInput").hide();
-			$("#searchSkuValue").hide();
-			$("#right-plane div.mainProperty").hide();
-						
-			if(treeNode.isParent) {
-				return false;
-			}
-			
-			var $group;
-			
-			//展现sku属性列表
-			$.ajax({
-				url: basePath + "skuManage/category/"+treeNode.categoryId+".html?" + new Date().getTime(),
-				dataType: "json",
-				async: false,
-				type: "get",
-				data: {
-					
-				},
-				success: function(data) {
-					$.each(data, function(i,item){
-						var setting = {
-								inputBoxValue: item.frontName,
-								category: classifyTree.category,
-								categoryId: item.categoryId,
-								propertyId: item.skuAttrId
-						};
-						//填写隐藏域  存储当前的categoryId
-						$("#addSkuForm input[name='categoryId']").val(setting.categoryId);
-						
-						if(item.state == "sku_attr_enable") {
-							setting.status = "enable";
-						} else {
-							setting.status = "disable";
-						}
-						$group = PropertyGroup.init(setting);
-						$("#middle-plane ul.list").append($group);
-					});
-					
-				},
-				error: function(data) {
-					alert("出错了！");
-				}
-			});
-			
-			//查询sku属性
-			$("#middle-plane input.searchInput").val("");
-			$("#searchSku").click(function(){
-				var $a = $("#middle-plane ul.list a"), value = $("#middle-plane input.searchInput").val().toLowerCase();
-				for(var i = 0;i<$a.length;i++) {
-					if($a.eq(i).html().toLowerCase() == value) {
+		});
+
+		//查询sku属性
+		$("#middle-plane input.searchInput").val("");
+		$("#searchSku").click(function() {
+			var $a = $("#middle-plane ul.list a"),
+				value = $("#middle-plane input.searchInput").val().toLowerCase();
+			for (var i = 0; i < $a.length; i++) {
+				if ($a.eq(i).html().toLowerCase() == value) {
 					//	$a.eq(i).parent().css("background-color", "yellow");						
-						$("#middle-plane").animate({scrollTop:$a.eq(i).offset().top-60},1000);
-					
-						
-					}
+					$("#middle-plane").animate({
+						scrollTop: $a.eq(i).offset().top - 60
+					}, 1000);
+
+
 				}
-			});
-			
-			$("#searchSkuValue").click(function(){
-				var $input = $("#right-plane ul.list input"), value = $("#right-plane input.searchInput").val().toLowerCase();
-				for(var i = 0;i<$input.length;i++) {
-					if($input.eq(i).val().toLowerCase() == value) {
-						$("#right-plane").animate({scrollTop:$input.eq(i).offset().top-60},1000);
-					}
+			}
+		});
+
+		$("#searchSkuValue").click(function() {
+			var $input = $("#right-plane ul.list input"),
+				value = $("#right-plane input.searchInput").val().toLowerCase();
+			for (var i = 0; i < $input.length; i++) {
+				if ($input.eq(i).val().toLowerCase() == value) {
+					$("#right-plane").animate({
+						scrollTop: $input.eq(i).offset().top - 60
+					}, 1000);
 				}
-			});
-			
-			$("[data-toggle='tooltip']").tooltip();
+			}
+		});
+
+		$("[data-toggle='tooltip']").tooltip();
 	}
 
 	function beforeClick(treeId, treeNode, clickFlag) {
-		if(treeNode.drop) {
+		if (treeNode.drop) {
 			return false;
-		}
-		else {
+		} else {
 			return true;
 		}
 	}
 
 	function beforeDrag(treeId, treeNodes) {
-		for (var i=0,l=treeNodes.length; i<l; i++) {
+		for (var i = 0, l = treeNodes.length; i < l; i++) {
 			if (treeNodes[i].drag === false) {
 				return false;
 			}
 		}
 		return true;
 	}
+
 	function beforeDrop(treeId, treeNodes, targetNode, moveType) {
 
 		return targetNode ? targetNode.drop !== false : true;
 	}
 
 	function getFont(treeId, treeNode) {
-		if(treeNode.del) {
-			return {color:"grey"};
-		}
-		else {
+		if (treeNode.del) {
+			return {
+				color: "grey"
+			};
+		} else {
 			return {};
 		}
 	}
 
 	function setRemoveBtn(treeId, treeNode) {
-		if(treeNode.del) {
+		if (treeNode.del) {
 			return false;
-		}
-		else {
+		} else {
 			return true;
 		}
 	}
 
 	function setRenameBtn(treeId, treeNode) {
-		if(treeNode.del) {
+		if (treeNode.del) {
 			return false;
-		}
-		else {
+		} else {
 			return true;
 		}
 	}
 
 	function beforeRemove(treeId, treeNode) {
-		if(confirm("确定删除分类---"+treeNode.name+"吗?")) {
+		if (confirm("确定删除分类---" + treeNode.name + "吗?")) {
 			iter(treeNode);
 		}
 		return false;
 	}
 
 	function iter(item) {
-		if(item.isParent) {
+		if (item.isParent) {
 			item.del = true;
 			var zTree = $.fn.zTree.getZTreeObj(classifyTree.treeId);
 			zTree.updateNode(item, true);
 			var children = item.children;
-			$.each(children, function(i,kk){
+			$.each(children, function(i, kk) {
 				iter(kk);
 			});
 		} else {
@@ -211,17 +230,17 @@
 	}
 
 	var newCount = 1;
+
 	function addHoverDom(treeId, treeNode) {
-		if(treeNode.del) {
+		if (treeNode.del) {
 			return null;
 		}
 		var sObj = $("#" + treeNode.tId + "_span");
-		if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
-		var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
-			+ "' title='add node' onfocus='this.blur();'></span>";
+		if (treeNode.editNameFlag || $("#addBtn_" + treeNode.tId).length > 0) return;
+		var addStr = "<span class='button add' id='addBtn_" + treeNode.tId + "' title='add node' onfocus='this.blur();'></span>";
 		sObj.after(addStr);
-		var btn = $("#addBtn_"+treeNode.tId);
-		if (btn) btn.bind("click", function(){
+		var btn = $("#addBtn_" + treeNode.tId);
+		if (btn) btn.bind("click", function() {
 			var zTree = $.fn.zTree.getZTreeObj(classifyTree.treeId);
 
 			$("#addClassify").modal('show');
@@ -238,21 +257,22 @@
 	}
 
 	function removeHoverDom(treeId, treeNode) {
-		$("#addBtn_"+treeNode.tId).unbind().remove();
+		$("#addBtn_" + treeNode.tId).unbind().remove();
 	}
-	
+
 	var perCount = 100;
+
 	function getUrl(treeId, treeNode) {
 		//根据父节点加载其子节点
-//		var curCount = (treeNode.children) ? treeNode.children.length:0;
-//		var getCount = (curCount + perCount) > treeNode.count ? (treeNode.count - curCount) : perCount;
-//		var param = "id="+treeNode.id+"_"+(treeNode.times++) +"&count="+getCount;
-//		console.log(param);
+		//		var curCount = (treeNode.children) ? treeNode.children.length:0;
+		//		var getCount = (curCount + perCount) > treeNode.count ? (treeNode.count - curCount) : perCount;
+		//		var param = "id="+treeNode.id+"_"+(treeNode.times++) +"&count="+getCount;
+		//		console.log(param);
 		return basePath + "classify/getChildNodes.html";
 	}
 
 	function beforeExpand(treeId, treeNode) {
-		if(!treeNode.isAjaxing) {
+		if (!treeNode.isAjaxing) {
 			ajaxGetNodes(treeNode, "refresh");
 			return true;
 		} else {
@@ -260,7 +280,7 @@
 			return false;
 		}
 	}
-	
+
 	function ajaxGetNodes(treeNode, reloadType) {
 		var zTree = $.fn.zTree.getZTreeObj(classifyTree.treeId);
 		if (reloadType == "refresh") {
@@ -269,46 +289,46 @@
 		}
 		zTree.reAsyncChildNodes(treeNode, reloadType, true);
 	}
-	
+
 	function onAsyncSuccess(event, treeId, treeNode, msg) {
 		if (!msg || msg.length == 0) {
 			return;
 		}
 		var zTree = $.fn.zTree.getZTreeObj(classifyTree.treeId),
-		totalCount = treeNode.count;
-//		if (treeNode.children.length < totalCount) {
-//			setTimeout(function() {ajaxGetNodes(treeNode);}, perTime);
-//		} else {
-//			treeNode.icon = "";
-//			zTree.updateNode(treeNode);
-//			zTree.selectNode(treeNode.children[0]);
-//			endTime = new Date();
-//			var usedTime = (endTime.getTime() - startTime.getTime())/1000;
-//			className = (className === "dark" ? "":"dark");
-//			showLog("[ "+getTime()+" ]&nbsp;&nbsp;treeNode:" + treeNode.name );
-//			showLog("加载完毕，共进行 "+ (treeNode.times-1) +" 次异步加载, 耗时："+ usedTime + " 秒");
-//		}
-		
+			totalCount = treeNode.count;
+		//		if (treeNode.children.length < totalCount) {
+		//			setTimeout(function() {ajaxGetNodes(treeNode);}, perTime);
+		//		} else {
+		//			treeNode.icon = "";
+		//			zTree.updateNode(treeNode);
+		//			zTree.selectNode(treeNode.children[0]);
+		//			endTime = new Date();
+		//			var usedTime = (endTime.getTime() - startTime.getTime())/1000;
+		//			className = (className === "dark" ? "":"dark");
+		//			showLog("[ "+getTime()+" ]&nbsp;&nbsp;treeNode:" + treeNode.name );
+		//			showLog("加载完毕，共进行 "+ (treeNode.times-1) +" 次异步加载, 耗时："+ usedTime + " 秒");
+		//		}
+
 		treeNode.icon = "";
 		zTree.updateNode(treeNode);
 		zTree.selectNode(treeNode.children[0]);
 	}
-	
+
 	function onAsyncError(event, treeId, treeNode, XMLHttpRequest, textStatus, errorThrown) {
 		var zTree = $.fn.zTree.getZTreeObj(classifyTree.treeId);
 		alert("异步获取数据出现异常。");
 		treeNode.icon = "";
 		zTree.updateNode(treeNode);
 	}
-	
+
 	window.classifyTree = $.fn.classifyTree = {
 		treeId: "treeDemo",
 		customSetting: defaultSetting,
 		category: "mainProperty",
-		
+
 		initTree: function() {
-			var setting = $.extend({},defaultSetting, classifyTree.customSetting);
-			$.fn.zTree.init($("#"+classifyTree.treeId), setting, zNodes);
+			var setting = $.extend({}, defaultSetting, classifyTree.customSetting);
+			$.fn.zTree.init($("#" + classifyTree.treeId), setting, zNodes);
 
 		}
 
@@ -316,6 +336,6 @@
 
 })(jQuery);
 
-$(document).ready(function(){
+$(document).ready(function() {
 
 });

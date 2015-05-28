@@ -100,8 +100,7 @@ public class SkuController extends BaseController{
             result.put("result", "false");
             e.printStackTrace();
             
-        }
-        
+        }      
         resultMapper.writeValue(response.getWriter(), result);
     }
     
@@ -132,8 +131,7 @@ public class SkuController extends BaseController{
         SkuAttrCondition condition = new SkuAttrCondition();
         condition.setCategoryId(categoryId);
         List<SkuAttr> skuAttrList = skuAttrService.selectByCondition(condition);
-        ObjectMapper resultMapper = new ObjectMapper();
-        
+        ObjectMapper resultMapper = new ObjectMapper();      
         resultMapper.writeValue(response.getWriter(), skuAttrList);
     }
     
@@ -279,8 +277,7 @@ public class SkuController extends BaseController{
             }
         }catch(Exception e) {
             result.put("result", "false");
-            e.printStackTrace();
-            
+            e.printStackTrace();           
         }
         
         resultMapper.writeValue(response.getWriter(), result);
@@ -443,6 +440,5 @@ public class SkuController extends BaseController{
         map.put("uploadResultCode", uploadResultCode);
         response.setContentType("text/html;charset=UTF-8");
         mapper.writeValue(response.getWriter(), map);
-    }
-    
+    } 
 }
