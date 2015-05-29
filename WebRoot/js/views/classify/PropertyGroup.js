@@ -197,7 +197,7 @@
 				}
 			});
 
-
+			//修改sku属性
 			$("#propertyModal button.commit")[0].onclick = function() {
 				if ($("#addSkuForm").valid()) {
 					$.ajax({
@@ -207,6 +207,7 @@
 						type: "post",
 						data: $("#addSkuForm").serialize(),
 						success: function(data) {
+							console.log(data);
 							if (data.result == "true") {
 								//若状态为启用状态
 								//console.log(data);

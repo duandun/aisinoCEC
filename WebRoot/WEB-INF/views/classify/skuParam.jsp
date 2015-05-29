@@ -263,10 +263,10 @@
 					</div>
 					<br>
 					<div id="displayImg">
-						<img alt="图片1" src="<%=path %>
+						<!--<img alt="图片1" src="<%=path %>
 						images/11.png" title="图片" id="imgPreview" style="width:50px;height:50px;"/>
-						<button type="button" class="btn btn-default">删除</button>
-					</div>
+						<button type="button" class="btn btn-default" id="deleteImg">删除</button>
+					--></div>
 					<br>
 
 					<br>
@@ -323,14 +323,6 @@
 				<div class="imageSelect">
 					<input type="file" id="uploadImg" name="uploadImg" value="图片"/>
 					<br>
-					<label class="control-label">存储名称：</label>
-					<input type="text" name="storeName" data-val-regex-pattern="(?!^\d[A-Za-z0-9]*$)^[A-Za-z0-9_-]{1,25}$" data-val-regex="用户名只允许字母、数字、下划线、横线组成，首位只能为字母，小于25个字符。"
-      		 data-val-required="请填写名称" data-val="true" class="form-control" 
-      		 data-val="true" data-val-remote="可选项值已存在" data-val-remote-additionalfields="*.storeName" data-val-remote-url="<%=path %>
-					skuManage/valueCheck.html" data-val-remote-type="post"/>
-					<span class="help-block">
-						<span data-valmsg-replace="true" data-valmsg-for="storeName" class="field-validation-valid"></span>
-					</span>
 
 					<label class="control-label">图片名称：</label>
 					<input type="text" name="frontName"   data-val-length-max="64" data-val-length="可选项值小于64位字符" data-val-required="请填写名称" data-val="true" class="form-control" 

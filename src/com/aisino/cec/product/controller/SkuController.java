@@ -1,16 +1,5 @@
-/**
- * @Title: SkuController.java
- * @Description: TODO(用一句话描述该文件做什么)
- * @Copyright (c) 2015, Aisino All Rights Reserved.
- */
-/**    
- * @Title: SkuController.java  
- * @Description: TODO(用一句话描述该文件做什么)  
- * @Copyright (c) 2015, Aisino All Rights Reserved.
- */
 package com.aisino.cec.product.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -20,12 +9,10 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,11 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import sun.misc.BASE64Encoder;
 
-import com.aisino.cec.common.util.random.IMajorKey;
 import com.aisino.cec.common.util.web.BaseController;
-import com.aisino.cec.enterprise.model.authentication.AuditInfo;
 import com.aisino.cec.product.conditionbean.SkuAttrCondition;
-import com.aisino.cec.product.enumpackage.SkuAttrEnum;
 import com.aisino.cec.product.model.SkuAttr;
 import com.aisino.cec.product.model.SkuOption;
 import com.aisino.cec.product.service.ISkuAttrService;
@@ -67,6 +51,10 @@ public class SkuController extends BaseController{
     @Resource(name="userService")
     private IUserService userService;
     
+//    /** 暂时存储图片*/
+//    List<ImagesEntity> picturesData = new ArrayList<ImagesEntity>();
+//    /** 要删除的图片 */
+//    List<ImagesEntity> deletePicturesData = new ArrayList<ImagesEntity>();
     
     /**
      * 插入一条sku属性记录
@@ -253,7 +241,7 @@ public class SkuController extends BaseController{
      */
     @RequestMapping("/insertSkuOption/{skuAttrId}")
     @ResponseBody
-    public void insertSkuOption(SkuOption skuOption, @PathVariable String skuAttrId, HttpServletRequest request, HttpServletResponse response)
+    public void insertSkuOption(SkuOption skuOption, @PathVariable String skuAttrId, HttpServletRequest request, HttpServletResponse response) 
         throws JsonGenerationException, JsonMappingException, IOException {
         
         boolean resultCheck = false;
@@ -360,7 +348,7 @@ public class SkuController extends BaseController{
     }
     
     /**
-     * 上传图片
+     * 上传图片 todo 可以保存一个临时的imageId用来标示图片
      * @param uploader
      * @param response
      * @throws JsonGenerationException
@@ -369,8 +357,12 @@ public class SkuController extends BaseController{
      */
     @RequestMapping("/uploadImage")
     @ResponseBody
-    public void uploadImage(@RequestParam MultipartFile uploadImg, HttpServletRequest request, HttpServletResponse response) throws JsonGenerationException,
-        JsonMappingException, IOException {
+    public void uploadImage(@RequestParam MultipartFile  uploadImg, HttpServletResponse response)
+        throws JsonGenerationException, JsonMappingException, IOException {
+        
+ //       MultipartFile uploadImg = request.getFile("uploadImg");
+//        String frontName = request.getParameter("frontName");
+   //     String frontName = uploadImg.getName("frontName");
         
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> map = new HashMap<String, Object>();
@@ -391,15 +383,6 @@ public class SkuController extends BaseController{
                 } else if(uploadImg.getSize()/1024/1024 > 5) {
                     uploadResultCode = "toBig";
                 }else {
-                    
-                    File f=new File(request.getContextPath()+"/images/"+fileName);  
-                    String a = request.getContextPath()+"/images/"+fileName;
-                    System.out.println(a);
-                    try {  
-                        FileUtils.copyInputStreamToFile(uploadImg.getInputStream(),f );  
-                    } catch (IOException e) {  
-                        e.printStackTrace();  
-                    }  
                     uploadResultCode = "SUCCESS";
                     
                     // 创建图片对象
@@ -441,4 +424,34 @@ public class SkuController extends BaseController{
         response.setContentType("text/html;charset=UTF-8");
         mapper.writeValue(response.getWriter(), map);
     } 
+    
+    /**
+     * 删除图片
+     * @param imgId
+     * @param response
+     * @throws JsonGenerationException
+     * @throws JsonMappingException
+     * @throws IOException
+     */
+//    @RequestMapping("/removeImg")
+//    @ResponseBody
+//    public void removeImg(String imageId, HttpServletResponse response) 
+//        throws JsonGenerationException, JsonMappingException, IOException {
+//        
+//        ObjectMapper mapper = new ObjectMapper();
+//        Map<String, Object> map = new HashMap<String, Object>();
+//        try {
+//            for (ImagesEntity image : this.picturesData) {
+//                if (image.getImageId().equals(imageId)) {
+//                    this.deletePicturesData.add(image);
+//                }
+//            }
+//            this.picturesData.removeAll(this.deletePicturesData);
+//            map.put("picturesData", this.picturesData);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        mapper.writeValue(response.getWriter(), map);
+//    }
+
 }
