@@ -17,6 +17,8 @@ $(document).ready(function() {
 
 		$("#picUploadForm").show();
 		$("#choosePic").parent().after($("#picUploadForm"));
+		$("#picUploadForm div input[name='frontName']").val("");
+		$("#picUploadForm div input[name='descInfo']").val("");
 
 		$("#picUploadForm div.picPanel button").click(function() {
 			$("#picUploadForm").appendTo('body');
@@ -25,6 +27,31 @@ $(document).ready(function() {
 	});
 
 	window.skuParam = $.fn.skuParam = {
+			
+		resetDialog: function() {
+			$.ajax({
+				url: basePath+"skuManage/clearImg.html?"+new Date().getTime(),
+				dataType: "json",
+				type: "get",
+				data:{},
+				async: false,
+				success: function(data) {
+					var result = data.result;
+					if(result=="success") {
+						$("#value").val("");
+						$("#addSkuValueForm div input[name='descInfo']").val("");
+						$("#addSkuValueForm div input[name='modifyInfo']").val("");
+						$("#picUploadForm div input[name='frontName']").val("");
+						$("#picUploadForm div input[name='descInfo']").val("");
+						$("#displayImg").html("");
+					}
+				},
+				error: function(data) {
+					alert("出错了！");
+				}
+			});
+		},
+		
 		uploadImage: function() {
 			$("#uploadImg").ajaxStart(function() {
 				//	$.jBox.tip("正在上传...", 'loading');
@@ -52,14 +79,17 @@ $(document).ready(function() {
 						secureuri: false,
 						fileElementId: 'uploadImg',
 						dataType: 'JSON',
-						data: $("#picUploadForm").serialize(),
+						data: {
+							frontName: $("#picUploadForm div input[name='frontName']").val(),
+							descInfo: $("#picUploadForm div input[name='descInfo']").val()
+						},
 						type: "post",
 						success: function(data) {
-							console.log($("#picUploadForm").serialize());
+							//console.log($("#picUploadForm").serialize());
 							console.log(data);
-							console.log(data.uploadResultCode);
+						//	console.log(data.uploadResultCode);
 							var json = eval("(" + data + ")");
-							console.log(json);
+						//	console.log(json);
 							if ("NONE" == json.uploadResultCode) {
 								//	$.jBox.info("图片没有上传成功!", "提示");
 							} else if ("NOTALLOW" == json.uploadResultCode) {
@@ -67,7 +97,7 @@ $(document).ready(function() {
 							} else if ("toBig" == json.uploadResultCode) {
 								//	$.jBox.info("上传的文件最大为5MB!", "提示");
 							} else if ("SUCCESS" == json.uploadResultCode) {
-								// 图片数据存库后展示在前台页面
+								
 								
 								var $img = $("<img>").attr("src", json.imageData).css("width", "50px").css("height", "50px").appendTo($("#displayImg"));
 								$("<button>").addClass("btn btn-default").html("删除").appendTo($("#displayImg")).click(function(){
@@ -75,21 +105,21 @@ $(document).ready(function() {
 									$img.remove();									
 									$(this).remove();
 									
-//									$.ajax({
-//										url: basePath + "skuManage/removeImg.html?" + new Date().getTime(),
-//										dataType: "json",
-//										type: "post",
-//										data: {
-//											imageId: json.imageId
-//										},
-//										success: function(data) {
-//											$img.remove();
-//											$(this).remove();
-//										},
-//										error: function(data)  {
-//											alert("删除出错了！");
-//										}
-//									});
+									$.ajax({
+										url: basePath + "skuManage/removeImg.html?" + new Date().getTime(),
+										dataType: "json",
+										type: "post",
+										data: {
+											imageId: json.imageId
+										},
+										success: function(data) {
+											$img.remove();
+											$(this).remove();
+										},
+										error: function(data)  {
+											alert("删除出错了！");
+										}
+									});
 								});
 								
 								$("#imgPreview").attr("src", json.imageData);

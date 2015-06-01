@@ -1,7 +1,9 @@
 package com.aisino.cec.product.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -19,15 +21,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.MultipartRequest;
 
 import sun.misc.BASE64Encoder;
 
+import com.aisino.cec.common.util.random.RandomUtil;
 import com.aisino.cec.common.util.web.BaseController;
 import com.aisino.cec.product.conditionbean.SkuAttrCondition;
+import com.aisino.cec.product.model.Image;
 import com.aisino.cec.product.model.SkuAttr;
 import com.aisino.cec.product.model.SkuOption;
 import com.aisino.cec.product.service.ISkuAttrService;
 import com.aisino.cec.product.service.ISkuOptionService;
+import com.aisino.cec.product.vo.ImageInfoVo;
 import com.aisino.cec.user.model.User;
 import com.aisino.cec.user.service.IUserService;
 
@@ -50,6 +57,15 @@ public class SkuController extends BaseController{
     
     @Resource(name="userService")
     private IUserService userService;
+    
+    //缓存图片信息
+    List<Image> imageData = new ArrayList<Image>();
+    
+    //缓存删除图片信息
+    List<Image> delImageData = new ArrayList<Image>();
+    
+    //缓存最终传入图片服务器的图片信息
+    List<ImageInfoVo>  imageServData = new ArrayList<ImageInfoVo>();
     
 //    /** 暂时存储图片*/
 //    List<ImagesEntity> picturesData = new ArrayList<ImagesEntity>();
@@ -357,13 +373,13 @@ public class SkuController extends BaseController{
      */
     @RequestMapping("/uploadImage")
     @ResponseBody
-    public void uploadImage(@RequestParam MultipartFile  uploadImg, HttpServletResponse response)
+    public void uploadImage(MultipartHttpServletRequest  req, HttpServletResponse response)
         throws JsonGenerationException, JsonMappingException, IOException {
         
- //       MultipartFile uploadImg = request.getFile("uploadImg");
-//        String frontName = request.getParameter("frontName");
-   //     String frontName = uploadImg.getName("frontName");
-        
+    //    MultipartHttpServletRequest req = (MultipartHttpServletRequest)request;
+        MultipartFile uploadImg = req.getFile("uploadImg");
+        String frontName = req.getParameter("frontName");
+        String descInfo = req.getParameter("descInfo");        
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> map = new HashMap<String, Object>();
         // 上传处理默认为失败的状态
@@ -383,19 +399,7 @@ public class SkuController extends BaseController{
                 } else if(uploadImg.getSize()/1024/1024 > 5) {
                     uploadResultCode = "toBig";
                 }else {
-                    uploadResultCode = "SUCCESS";
-                    
-                    // 创建图片对象
-                //    ImagesEntity imagesEntity = new ImagesEntity();
-                    // 设置图片主键
-                //    imagesEntity.setImageId(RandomGUIDUtil.getValue());
-                    // 保存图片名称
-                //    imagesEntity.setImageName(fileName);
-                    // 保存图片类型
-                //    imagesEntity.setImageType(ImageTypeEnum.IMAGE_TYPE_GUARANTEE.getValue());
-               //     String imageSuffix = fileName.substring(fileName.lastIndexOf("."));
-               //     imagesEntity.setImageSuffix(imageSuffix);
-                    // 取上传图片的数据
+
                     fileData = IOUtils.toByteArray(uploadImg.getInputStream());
                     IOUtils.closeQuietly(uploadImg.getInputStream());
                     // 图片数据需要经过base64转码
@@ -407,19 +411,34 @@ public class SkuController extends BaseController{
                     
                     String thumbnailsByteData = "data:image/gif;base64," + enc.encode(fileData);
                     
-                    // 图片缓存在全局变量内
-              //      this.contractPicturesData.add(imagesEntity);
-                    // 上传文件成功
                     uploadResultCode = "SUCCESS";
-             //       map.put("contractImages", imagesEntity);
+           
+                    Image image = new Image();
+                    image.setBinaryInfoId(thumbnailsByteData);
+                    image.setImageId(RandomUtil.getRandom16String());
+                    image.setFrontName(frontName);
+                    image.setDescInfo(descInfo);
                     
+                    //用于前台页面图片的反显
                     map.put("imageData", thumbnailsByteData);
-
+                    map.put("imageId", image.getImageId());
+                    
+                    //将图片base64码、frontName、descInfo缓存到全局变量中
+                    this.imageData.add(image);
+                                       
+                    ImageInfoVo imageInfoVo = new ImageInfoVo();
+                    imageInfoVo.setImage(image);
+                    imageInfoVo.setMultiPartFile(uploadImg);
+                  //将image原图、image缓存到全局变量中
+                    this.imageServData.add(imageInfoVo);
+                    
                 }
             }
         } catch (Exception e) {
+            uploadResultCode = "failure";
             e.printStackTrace();
         }
+       
         map.put("uploadResultCode", uploadResultCode);
         response.setContentType("text/html;charset=UTF-8");
         mapper.writeValue(response.getWriter(), map);
@@ -433,25 +452,73 @@ public class SkuController extends BaseController{
      * @throws JsonMappingException
      * @throws IOException
      */
-//    @RequestMapping("/removeImg")
-//    @ResponseBody
-//    public void removeImg(String imageId, HttpServletResponse response) 
-//        throws JsonGenerationException, JsonMappingException, IOException {
-//        
-//        ObjectMapper mapper = new ObjectMapper();
-//        Map<String, Object> map = new HashMap<String, Object>();
-//        try {
-//            for (ImagesEntity image : this.picturesData) {
-//                if (image.getImageId().equals(imageId)) {
-//                    this.deletePicturesData.add(image);
-//                }
-//            }
-//            this.picturesData.removeAll(this.deletePicturesData);
-//            map.put("picturesData", this.picturesData);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        mapper.writeValue(response.getWriter(), map);
-//    }
+    @RequestMapping("/removeImg")
+    @ResponseBody
+    public void removeImg(String imageId, HttpServletResponse response) 
+        throws JsonGenerationException, JsonMappingException, IOException {
+        
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> map = new HashMap<String, Object>();
+        try {
+            //将删除的元素缓存到delImageData全局变量中
+            for (Image image : this.imageData) {
+                if (image.getImageId().equals(imageId)) {
+                    this.delImageData.add(image);
+                }
+            }
+            
+            //根据imageId来标示图片，从全局变量imageServData中删除元素
+            Iterator<ImageInfoVo> iter = (Iterator<ImageInfoVo>) this.imageServData.iterator(); 
+            while(iter.hasNext()) {
+                ImageInfoVo item = iter.next();
+                String id = item.getImage().getImageId();
+                String frontName = item.getImage().getFrontName();
+               
+                if(null!=id&&id.equals(imageId)) {
+                    this.imageServData.remove(item);
+                    break;
+                }
+            }
+            System.out.println( this.imageServData.size());
+            
+            //从imageData缓存中删除元素
+            this.imageData.removeAll(this.delImageData);
+            this.delImageData.clear();
+            map.put("imageData", this.imageData);
+            map.put("result", "success");
+        } catch (Exception e) {
+            map.put("result", "fail");
+            e.printStackTrace();
+        }
+        mapper.writeValue(response.getWriter(), map);
+    }
+    
+    
+    /**
+     * 清除图片缓存
+     * @param response
+     * @throws JsonGenerationException
+     * @throws JsonMappingException
+     * @throws IOException
+     */
+    @RequestMapping("/clearImg")
+    @ResponseBody
+    public void clearImg(HttpServletResponse response) 
+        throws JsonGenerationException, JsonMappingException, IOException {
+        
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> map = new HashMap<String, Object>();
+        try {
+            this.imageData.clear();
+            this.delImageData.clear();
+            this.imageServData.clear();
+            map.put("result", "success");
+        } catch(Exception e) {
+            map.put("result", "fail");
+            e.printStackTrace();
+        }
+        
+        mapper.writeValue(response.getWriter(), map);
+    }
 
 }
