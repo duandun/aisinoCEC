@@ -255,7 +255,7 @@
 
 				},
 				success: function(data) {
-					console.log(data);
+				//	console.log(data);
 					$.each(data, function(i, item) {
 						var setting = {
 							inputBoxValue: item.value,
@@ -326,7 +326,9 @@
 				type: "get",
 				data: {},
 				success: function(data) {
-					console.log(data);
+			//		console.log(data);
+					//图片显示
+					
 					$("#value").val(data.value);
 					$("#addSkuValueForm div input[name='descInfo']").val(data.descInfo);
 					var $stateRadio = $("#addSkuValueForm div input[name='state']"),

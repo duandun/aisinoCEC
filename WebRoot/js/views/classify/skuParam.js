@@ -100,26 +100,16 @@ $(document).ready(function() {
 								
 								
 								var $img = $("<img>").attr("src", json.imageData).css("width", "50px").css("height", "50px").appendTo($("#displayImg"));
-								$("<button>").addClass("btn btn-default").html("删除").appendTo($("#displayImg")).click(function(){
-									
-									$img.remove();									
-									$(this).remove();
-									
-									$.ajax({
-										url: basePath + "skuManage/removeImg.html?" + new Date().getTime(),
-										dataType: "json",
-										type: "post",
-										data: {
-											imageId: json.imageId
-										},
-										success: function(data) {
+								$("<button>").addClass("btn btn-default").html("删除").appendTo($("#displayImg")).click(function() {
+									var that = this;
+									var result = skuParam.removeImg(json.imageId, function(data) {									
+										if(data.result == "success") {
 											$img.remove();
-											$(this).remove();
-										},
-										error: function(data)  {
-											alert("删除出错了！");
+											
+											$(that).remove();
 										}
 									});
+									
 								});
 								
 								$("#imgPreview").attr("src", json.imageData);
@@ -141,7 +131,29 @@ $(document).ready(function() {
 					});
 				}
 			}
+		},
+		
+		removeImg: function(imageId, callback) {
+			var result;
+			$.ajax({
+				url: basePath + "skuManage/removeImg.html?" + new Date().getTime(),
+				dataType: "json",
+				type: "post",
+				async: false,
+				data: {
+					imageId: imageId
+				},
+				success: function(data) {
+					callback&&callback(data);
+				},
+				error: function(data)  {
+					alert("删除出错了！");
+					result = data.result;
+				}
+			});
+			
 		}
+		
 	};
 
 	//添加SKU属性
