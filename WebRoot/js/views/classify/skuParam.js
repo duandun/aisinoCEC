@@ -100,17 +100,20 @@ $(document).ready(function() {
 								
 								
 								var $img = $("<img>").attr("src", json.imageData).css("width", "50px").css("height", "50px").appendTo($("#displayImg"));
-								$("<button>").addClass("btn btn-default").html("删除").appendTo($("#displayImg")).click(function() {
-									var that = this;
-									var result = skuParam.removeImg(json.imageId, function(data) {									
-										if(data.result == "success") {
-											$img.remove();
-											
-											$(that).remove();
-										}
-									});
-									
-								});
+								
+								$("<button>", {
+									class: "btn btn-default",
+									text: "删除",
+									click: function() {
+										var that = this;
+										skuParam.removeImg(data.imageId, function(data){
+											if(data.result=="success") {
+												$img.remove();
+												$(that).remove();
+											}
+										});
+									}
+								}).appendTo($("#displayImg"));
 								
 								$("#imgPreview").attr("src", json.imageData);
 								$("#uploadImg").val("");

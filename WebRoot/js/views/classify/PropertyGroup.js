@@ -328,6 +328,31 @@
 				success: function(data) {
 			//		console.log(data);
 					//图片显示
+					var $img = $("<img>").attr("src", data.imageData).css("width", "50px").css("height", "50px").appendTo($("#displayImg"));
+//					$("<button>").addClass("btn btn-default").html("删除").appendTo($("#displayImg")).click(function() {
+//						var that = this;
+//						var result = skuParam.removeImg(data.imageId, function(data) {									
+//							if(data.result == "success") {
+//								$img.remove();							
+//								$(that).remove();
+//							}
+//						});
+//						
+//					});
+					
+					$("<button>", {
+						class: "btn btn-default",
+						text: "删除",
+						click: function() {
+							var that = this;
+							skuParam.removeImg(data.imageId, function(data){
+								if(data.result=="success") {
+									$img.remove();
+									$(that).remove();
+								}
+							});
+						}
+					}).appendTo($("#displayImg"));
 					
 					$("#value").val(data.value);
 					$("#addSkuValueForm div input[name='descInfo']").val(data.descInfo);
